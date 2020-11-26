@@ -14,8 +14,7 @@
 		{
 			_tdo = tdo;
 			_mtr = _tdo.transform.matrix;
-			_rct = _tdo.getBounds(_tdo.parent);
-			_rct.inflate(40, 40);
+			pf_ApplyMatrix(false);
 
 		}
 		private var _tdo:DisplayObject;
@@ -121,6 +120,14 @@
             return RxGeom.GetTY(_mtr);
         }
 		
+		
+		private function pf_ApplyMatrix(tbx:Boolean = true):void
+		{
+			if (tbx) _tdo.transform.matrix = _mtr;
+			_rct = _tdo.getBounds(_tdo.parent);
+			_rct.inflate(40, 40);
+		}
+		
 		private function pf_CheckRadian(trd:Number):Number
 		{
 			if (trd < 0)
@@ -130,19 +137,8 @@
 			return RxGeom.DoubleRound(trd);
 		}
 		
-
 		
-		private var _cnt:uint = 0;
-		public function ApplyMatrix(tbx:Boolean = true):void
-		{
-			if (tbx) _tdo.transform.matrix = _mtr;
-			_rct = _tdo.getBounds(_tdo.parent);
-			_rct.inflate(40, 40);
-			trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
-		}	
-		
-		
-		public function SetRotateCenter(trd:Number):Boolean
+		public function SetRotateCenter(trd:Number):void
 		{
 			var tyrd:Number = RxGeom.GetRadian1(_mtr);
 			var tnrd:Number = pf_CheckRadian(trd);
@@ -158,17 +154,15 @@
 				_mtr.rotate(tnrd);
 				_mtr.translate(tcx, tcy);
 				
-				//ApplyMatrix();
-				return true;
+				pf_ApplyMatrix();
 			}
-			
-			return false;
-		}		
+		}
 		
-		public function SetScaleCenter(tsx:Number, tsy:Number):Boolean
+		
+		public function SetScaleCenter(tsx:Number, tsy:Number):void
 		{			
-			if (tsx < 0.1) return false;
-			if (tsy < 0.1) return false;
+			if (tsx < 0.1) return;
+			if (tsy < 0.1) return;
 			
 			var tysx:Number = RxGeom.GetScaleX(_mtr);
 			var tysy:Number = RxGeom.GetScaleY(_mtr);
@@ -191,12 +185,10 @@
 				_mtr.scale(tnsx, tnsy);
 				_mtr.translate(tcx, tcy);
 				
-				//ApplyMatrix();
-				return true;
+				pf_ApplyMatrix();
 			}
-			
-			return false;
 		}		
+		
 		
 		
         //~~~~~~~~~~
@@ -205,8 +197,7 @@
             var ttx:Number = tv - RxGeom.GetLeft(_rct);
             var tty:Number = 0;
             _mtr.translate(ttx, tty);
-			
-			//ApplyMatrix();			
+			pf_ApplyMatrix();
         }
 
         public function MoveTop(tv:Number):void
@@ -214,8 +205,7 @@
             var ttx:Number = 0;
             var tty:Number = tv - RxGeom.GetTop(_rct);
             _mtr.translate(ttx, tty);
-			
-			//ApplyMatrix();
+			pf_ApplyMatrix();
         }
 		
         //~~~~~~~~~~
@@ -224,8 +214,7 @@
             var ttx:Number = tv - RxGeom.GetLeftCenter(_rct);
             var tty:Number = 0;
             _mtr.translate(ttx, tty);
-			
-			//ApplyMatrix();
+			pf_ApplyMatrix();
         }
 
         public function MoveTopCenter(tv:Number):void
@@ -233,8 +222,7 @@
             var ttx:Number = 0;
             var tty:Number = tv - RxGeom.GetTopCenter(_rct);
             _mtr.translate(ttx, tty);
-			
-			//ApplyMatrix();			
+			pf_ApplyMatrix();
         }
 		
         //~~~~~~~~~~
@@ -243,8 +231,7 @@
             var ttx:Number = tx - RxGeom.GetLeftCenter(_rct);
             var tty:Number = ty - RxGeom.GetTopCenter(_rct);
             _mtr.translate(ttx, tty);
-			
-			//ApplyMatrix();
+			pf_ApplyMatrix();
         }
 		
 		//~~~~~~~~~~
@@ -252,8 +239,7 @@
 		{			
 			_mtr.translate(-_mtr.tx, -_mtr.ty);
 			_mtr.translate(tmx, tmy);
-			
-			//ApplyMatrix();
+			pf_ApplyMatrix();
 		}
 		
 		
