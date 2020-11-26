@@ -171,8 +171,13 @@
 			_rxsipRotate.GetCont().y = tty;
 		
 		
+		
+		
 			pf_ImageHeightUpdate();
 			pf_ImageWidthUpdate();
+			
+			_rxvt.ApplyMatrix();
+			_rxvt.DrawBorders(_grp);
 		}
 		
 		private function pf_ImageHeightUpdate():void
@@ -190,15 +195,14 @@
 				var tssh:Number = tih - tmh;
 				var tprh:Number = _rxsipVert.GetScrollbar().GetPositionRatio();
 				var tiy:Number = rctArea.top - (tssh * tprh);
-		
+				
 				_rxvt.MoveTop(tiy);
-				_rxvt.DrawBorders(_grp);
 			}
 			else
 			{
 				var tmy:Number = RxGeom.GetTopCenter(rctArea);
+				
 				_rxvt.MoveTopCenter(tmy);
-				_rxvt.DrawBorders(_grp);
 			}
 		}
 		
@@ -219,13 +223,12 @@
 				var tix:Number = rctArea.left - (tssw * tprw);
 		
 				_rxvt.MoveLeft(tix);
-				_rxvt.DrawBorders(_grp);
 			}
 			else
 			{
 				var tmx:Number = RxGeom.GetLeftCenter(rctArea);
+				
 				_rxvt.MoveLeftCenter(tmx);
-				_rxvt.DrawBorders(_grp);
 			}
 		}
 		
@@ -233,22 +236,28 @@
 		private function pf_rxsbScale__Update():void
 		{
 			var tsa:Number = _rxsipScale.GetVal();
-			_rxvt.SetScaleCenter(tsa, tsa);
-			_rxvt.DrawBorders(_grp);
-			
-			pf_ImageHeightUpdate();
-			pf_ImageWidthUpdate();
+			if (_rxvt.SetScaleCenter(tsa, tsa))
+			{			
+				pf_ImageHeightUpdate();
+				pf_ImageWidthUpdate();
+				
+				_rxvt.ApplyMatrix();
+				_rxvt.DrawBorders(_grp);
+			}
 		}
 		
 		private function pf_rxsipRotate__Update():void
 		{
 			var tag:Number = _rxsipRotate.GetVal();
 			var trd:Number = RxGeom.GetAngleToRadian(tag);
-			_rxvt.SetRotateCenter(trd);
-			_rxvt.DrawBorders(_grp);
-			
-			pf_ImageHeightUpdate();
-			pf_ImageWidthUpdate();
+			if (_rxvt.SetRotateCenter(trd))
+			{			
+				pf_ImageHeightUpdate();
+				pf_ImageWidthUpdate();
+				
+				_rxvt.ApplyMatrix();
+				_rxvt.DrawBorders(_grp);
+			}
 		}
 		
 		
@@ -267,6 +276,8 @@
 				var tiy:Number = rctArea.top - (tssh * tprh);
 				
 				_rxvt.MoveTop(tiy);
+				
+				_rxvt.ApplyMatrix();
 				_rxvt.DrawBorders(_grp);
 			}
 		}
@@ -286,6 +297,8 @@
 				var tix:Number = rctArea.left - (tssw * tprw);
 				
 				_rxvt.MoveLeft(tix);
+				
+				_rxvt.ApplyMatrix();
 				_rxvt.DrawBorders(_grp);
 			}
 		}
@@ -338,7 +351,7 @@
 		
 		private function pf_sprArea__mouseUp(te:MouseEvent):void
 		{
-			if (_mdpt == null) return;
+			if (_mdpt === null) return;
 			
 			_stg.removeEventListener(MouseEvent.MOUSE_UP, pf_sprArea__mouseUp);
 			_stg.removeEventListener(MouseEvent.MOUSE_MOVE, pf_sprArea__mouseMove);
@@ -347,7 +360,7 @@
 		
 		private function pf_sprArea__mouseMove(te:MouseEvent):void
 		{
-			if (_mdpt == null) return;
+			if (_mdpt === null) return;
 			
 			var tx_gl:Number = RxGeom.GetLeft(_rctArea) + (_rxvt.GetLeftCenter() - _rxvt.GetLeft());
 			var tx_gr:Number = RxGeom.GetRight(_rctArea) - (_rxvt.GetRight() - _rxvt.GetLeftCenter());
@@ -393,6 +406,7 @@
 			//trace(tmx, tmy);
 			//_rxvt.MoveAt(tmx, tmy);
 			_rxvt.MoveCenter(tmx, tmy);
+			_rxvt.ApplyMatrix();
 			_rxvt.DrawBorders(_grp);
 			
 			
