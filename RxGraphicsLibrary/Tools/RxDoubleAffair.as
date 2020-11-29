@@ -16,7 +16,7 @@
                 _val = _minval;
             else if (_val > _maxval)
                 _val = _maxval;
-				
+
 			if (tvga == null)
 				_vga = new <Number>[0.1, 10.0, 0.01, 1.0];
 			else
@@ -28,7 +28,7 @@
         private var _minval:Number;
         private var _maxval:Number;
         private var _val:Number;
-		
+
 		private var _vga:Vector.<Number>;
         private var _fd:uint;
 
@@ -43,7 +43,7 @@
 				{
 					var ta:Number = _vga[ti];
 					var tv:Number = _val;
-					
+
 					if (tt == 'u')
 						tv = _val + ta;
 					else if (tt == 'd')

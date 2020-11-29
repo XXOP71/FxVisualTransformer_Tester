@@ -57,7 +57,7 @@
             _scrollSizeRatio = tssr;
             _positionRatio = tpr;
             _enabled = _owner.mouseEnabled;
-            
+
 
             _fcbf = tcbf;
 
@@ -99,7 +99,7 @@
             _grp.endFill();
 
 
-			
+
 			/*
             tx = _rctScrollArea.x - 5,
             tx = _rctScrollArea.x,
@@ -110,7 +110,7 @@
             _grp.drawRect(tx, ty, tw, th);
             _grp.endFill();
 			*/
-			
+
 
 
             tx = _rctThumb.x + _tmg,
@@ -124,7 +124,7 @@
             _grp.beginFill(0xffffff, 1);
             _grp.drawRoundRect(tx, ty, tw, th, 10, 10);
             _grp.endFill();
-			
+
 
 
 			/*
@@ -139,8 +139,8 @@
 				_grp.moveTo(tx + (tw / 2), ty);
 				_grp.lineTo(tx + (tw / 2), ty + th);
             }*/
-			
-            
+
+
 			const tkxw:Number = 8;
 			var tkx:Number, tky:Number, tkw:Number, tkh:Number;
             if (_type == TYPE_VERTICAL)
@@ -157,8 +157,8 @@
 				tkx = tx + ((tw / 2) - tkxw), tky = ty,
 				tkw = tkxw * 2, tkh = th;
 				_grp.drawRect(tkx, tky, tkw, tkh);
-				_grp.endFill();				
-            }			
+				_grp.endFill();
+            }
 
         }
 
@@ -246,7 +246,7 @@
                 _positionRatio = tv / tf;
 
             pf_UpdatePosition();
-			
+
 
             if (_fcbf != null)
 				_fcbf();

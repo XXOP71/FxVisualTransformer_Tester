@@ -28,7 +28,7 @@
         {
             _cont = cont;
             _cont.tabEnabled = false;
-			
+
 
             var spr_rxsb:Sprite = _cont[rxsbnm];
             _rxsb = new RxScrollbar(ttp, spr_rxsb, tsz, tssr, tpr, pf_rxsb__cbf);
@@ -104,7 +104,7 @@
             }
             catch (e:Error) { }
         }
-		
+
 
         private function pf_rxsb__cbf():void
         {
@@ -171,7 +171,7 @@
                 pf_val_upt();
             }
         }
-		
+
 		public function CallMouseWheelHandler(te:MouseEvent):void
 		{
 			pf_mswh(te);
