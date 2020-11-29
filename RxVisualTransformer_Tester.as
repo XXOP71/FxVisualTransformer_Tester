@@ -64,14 +64,14 @@
 								_owrt['mvc_rxsipScale'], RxScrollbar.TYPE_HORIZONTAL, 'mvc_rxsb', 'txb',
 								300, 0.1, 0.0,
 								0.3, 5.0, 1.0,
-								new <Number>[0.01, 10.0, 0.001, 0.1],
+								new <Number>[0.01, 1.0, 0.001, 0.1],//(Normal),(Ctrl+Shift),(Ctrl),(Shift)
 								3, pf_rxsbScale__Update);
 
 			_rxsipRotate = new RxScrollInput(
 								_owrt['mvc_rxsipRotate'], RxScrollbar.TYPE_HORIZONTAL, 'mvc_rxsb', 'txb',
 								300, 0.1, 0.0,
 								0.0, RxGeom.FullAngle, 0.0,
-								new <Number>[1.0, 100.0, 0.1, 10.0],//(Normal),(Ctrl+Shift),(Ctrl),(Shift)
+								new <Number>[1.0, 100.0, 0.1, 10.0],
 								1, pf_rxsipRotate__Update);
 
 
@@ -171,8 +171,12 @@
 			_rxsipRotate.GetCont().y = tty;
 		
 		
+			
 			pf_ImageHeightUpdate();
 			pf_ImageWidthUpdate();
+			
+			_rxvt.ApplyMatrix();
+			_rxvt.DrawBorders(_grp);			
 		}
 		
 		private function pf_ImageHeightUpdate():void
@@ -192,13 +196,12 @@
 				var tiy:Number = rctArea.top - (tssh * tprh);
 		
 				_rxvt.MoveTop(tiy);
-				_rxvt.DrawBorders(_grp);
 			}
 			else
 			{
 				var tmy:Number = RxGeom.GetTopCenter(rctArea);
+				
 				_rxvt.MoveTopCenter(tmy);
-				_rxvt.DrawBorders(_grp);
 			}
 		}
 		
@@ -219,13 +222,12 @@
 				var tix:Number = rctArea.left - (tssw * tprw);
 		
 				_rxvt.MoveLeft(tix);
-				_rxvt.DrawBorders(_grp);
 			}
 			else
 			{
 				var tmx:Number = RxGeom.GetLeftCenter(rctArea);
+				
 				_rxvt.MoveLeftCenter(tmx);
-				_rxvt.DrawBorders(_grp);
 			}
 		}
 		
@@ -233,22 +235,28 @@
 		private function pf_rxsbScale__Update():void
 		{
 			var tsa:Number = _rxsipScale.GetVal();
-			_rxvt.SetScaleCenter(tsa, tsa);
-			_rxvt.DrawBorders(_grp);
-			
-			pf_ImageHeightUpdate();
-			pf_ImageWidthUpdate();
+			if (_rxvt.SetScaleCenter(tsa, tsa))
+			{			
+				pf_ImageHeightUpdate();
+				pf_ImageWidthUpdate();
+				
+				_rxvt.ApplyMatrix();
+				_rxvt.DrawBorders(_grp);
+			}
 		}
 		
 		private function pf_rxsipRotate__Update():void
 		{
 			var tag:Number = _rxsipRotate.GetVal();
 			var trd:Number = RxGeom.GetAngleToRadian(tag);
-			_rxvt.SetRotateCenter(trd);
-			_rxvt.DrawBorders(_grp);
-			
-			pf_ImageHeightUpdate();
-			pf_ImageWidthUpdate();
+			if (_rxvt.SetRotateCenter(trd))
+			{			
+				pf_ImageHeightUpdate();
+				pf_ImageWidthUpdate();
+				
+				_rxvt.ApplyMatrix();
+				_rxvt.DrawBorders(_grp);
+			}
 		}
 		
 		
@@ -267,6 +275,8 @@
 				var tiy:Number = rctArea.top - (tssh * tprh);
 				
 				_rxvt.MoveTop(tiy);
+				
+				_rxvt.ApplyMatrix();
 				_rxvt.DrawBorders(_grp);
 			}
 		}
@@ -286,6 +296,8 @@
 				var tix:Number = rctArea.left - (tssw * tprw);
 				
 				_rxvt.MoveLeft(tix);
+				
+				_rxvt.ApplyMatrix();
 				_rxvt.DrawBorders(_grp);
 			}
 		}
@@ -300,8 +312,8 @@
 			{
 				var tiy:Number = RxGeom.GetTop(_rctArea) - _rxvt.GetTop();
 				var tpr:Number = tiy / tssh;
-				//trace(tiy, tssh, tiy / tssh);
-				//_rxsipVert.GetScrollbar().SetPositionRatio(tpr);
+				//trace(tssh, tiy, tpr);
+				
 				_rxsipVert.SetVal(tpr);
 			}
 		}		
@@ -315,8 +327,8 @@
 			{
 				var tix:Number = RxGeom.GetLeft(_rctArea) - _rxvt.GetLeft();
 				var tpr:Number = tix / tssw;
-				//trace(tix, tssw, tix / tssw);
-				//_rxsipHori.GetScrollbar().SetPositionRatio(tpr);
+				//trace(tssw, tix, tpr);
+				
 				_rxsipHori.SetVal(tpr);
 			}
 		}
@@ -373,7 +385,8 @@
 			}
 			else
 			{
-				tmx = RxGeom.GetRight(_rctArea) - RxGeom.GetHalfWidth(_rctArea);
+				tmx = RxGeom.GetRight(_rctArea) -
+					RxGeom.GetHalfWidth(_rctArea);
 			}
 			
 				
@@ -386,13 +399,14 @@
 			}
 			else
 			{
-				tmy = RxGeom.GetBottom(_rctArea) - RxGeom.GetHalfHeight(_rctArea);
+				tmy = RxGeom.GetBottom(_rctArea) -
+					RxGeom.GetHalfHeight(_rctArea);
 			}
 			
 			
 			//trace(tmx, tmy);
-			//_rxvt.MoveAt(tmx, tmy);
 			_rxvt.MoveCenter(tmx, tmy);
+			_rxvt.ApplyMatrix();
 			_rxvt.DrawBorders(_grp);
 			
 			
@@ -413,8 +427,10 @@
 			
 			_stg.addEventListener(MouseEvent.MOUSE_UP, pf_sprArea__mouseUp);
 			_stg.addEventListener(MouseEvent.MOUSE_MOVE, pf_sprArea__mouseMove);
+			
 			pf_sprArea__mouseMove(null);			
 		}
 		
 	}
 }
+
