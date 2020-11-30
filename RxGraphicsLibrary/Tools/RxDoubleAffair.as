@@ -11,17 +11,17 @@
 
             _minval = minval;
             _maxval = maxval;
-			_val = val;
+            _val = val;
             if (_val < _minval)
                 _val = _minval;
             else if (_val > _maxval)
                 _val = _maxval;
 
-			if (tvga == null)
-				_vga = new <Number>[0.1, 10.0, 0.01, 1.0];
-			else
-				_vga = tvga;
-			_vga.fixed = true;
+            if (tvga == null)
+                _vga = new <Number>[0.1, 10.0, 0.01, 1.0];
+            else
+                _vga = tvga;
+            _vga.fixed = true;
             _fd = tfd;
         }
 
@@ -29,34 +29,34 @@
         private var _maxval:Number;
         private var _val:Number;
 
-		private var _vga:Vector.<Number>;
+        private var _vga:Vector.<Number>;
         private var _fd:uint;
 
 
 
         public function ValueUpDown(tt:String = 'u', ti:uint = 0):void
         {
-			if ((tt == 'u') || (tt == 'd'))
-			{
-				if (_vga == null) return;
-				if ((_vga.length > 0) && (ti < _vga.length))
-				{
-					var ta:Number = _vga[ti];
-					var tv:Number = _val;
+            if ((tt == 'u') || (tt == 'd'))
+            {
+                if (_vga == null) return;
+                if ((_vga.length > 0) && (ti < _vga.length))
+                {
+                    var ta:Number = _vga[ti];
+                    var tv:Number = _val;
 
-					if (tt == 'u')
-						tv = _val + ta;
-					else if (tt == 'd')
-						tv = _val - ta;
+                    if (tt == 'u')
+                        tv = _val + ta;
+                    else if (tt == 'd')
+                        tv = _val - ta;
 
-					if (tv < _minval)
-						tv = _minval;
-					else if (tv > _maxval)
-						tv = _maxval;
+                    if (tv < _minval)
+                        tv = _minval;
+                    else if (tv > _maxval)
+                        tv = _maxval;
 
-					_val = tv;
-				}
-			}
+                    _val = tv;
+                }
+            }
         }
 
         public function GetRatio():Number

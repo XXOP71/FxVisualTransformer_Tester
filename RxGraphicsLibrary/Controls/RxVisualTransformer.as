@@ -1,47 +1,47 @@
 ﻿package RxGraphicsLibrary.Controls
 {
-	import flash.display.DisplayObject;
-	import flash.display.Graphics;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
-	import RxGraphicsLibrary.Tools.RxGeom;
+    import flash.display.DisplayObject;
+    import flash.display.Graphics;
+    import flash.geom.Matrix;
+    import flash.geom.Rectangle;
+    import RxGraphicsLibrary.Tools.RxGeom;
 
 
 
 
-	public class RxVisualTransformer
-	{
-		public function RxVisualTransformer(tdo:DisplayObject)
-		{
-			_tdo = tdo;
-			_mtr = _tdo.transform.matrix;
-			_drct = RxGeom.GetDefaultBounds(_tdo);
-			pf_MakeRect();
+    public class RxVisualTransformer
+    {
+        public function RxVisualTransformer(tdo:DisplayObject)
+        {
+            _tdo = tdo;
+            _mtr = _tdo.transform.matrix;
+            _drct = RxGeom.GetDefaultBounds(_tdo);
+            pf_MakeRect();
 
-		}
-		private var _tdo:DisplayObject;
-		public function GetTarget():DisplayObject
-		{
-			return _tdo;
-		}
+        }
+        private var _tdo:DisplayObject;
+        public function GetTarget():DisplayObject
+        {
+            return _tdo;
+        }
 
-		private var _mtr:Matrix;
-		public function GetMatrix():Matrix
-		{
-			return _mtr;
-		}
+        private var _mtr:Matrix;
+        public function GetMatrix():Matrix
+        {
+            return _mtr;
+        }
 
-		private var _drct:Rectangle;
-		public function GetDefaultRect():Rectangle
-		{
-			return _drct;
-		}
+        private var _drct:Rectangle;
+        public function GetDefaultRect():Rectangle
+        {
+            return _drct;
+        }
 
-		private var _rct:Rectangle;
-		public function GetRect():Rectangle
-		{
-			return _rct;
-		}
+        private var _rct:Rectangle;
+        public function GetRect():Rectangle
+        {
+            return _rct;
+        }
 
 
 
@@ -104,75 +104,75 @@
         }
 
 
-		private function pf_MakeRect():void
-		{
-			_rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
-		}
+        private function pf_MakeRect():void
+        {
+            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
+        }
 
-		private var _cnt:uint = 0;
-		public function ApplyMatrix():void
-		{
-			_tdo.transform.matrix = _mtr;
-			trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
-		}
-
-
-		public function SetRotateCenter(trd:Number):Boolean
-		{
-			var tyrd:Number = RxGeom.GetRadian1(_mtr);
-			var tnrd:Number = RxGeom.CheckRadian(trd);
-			//trace(tyrd, tnrd);
-			if (tnrd !== tyrd)
-			{
-				var tcx:Number = RxGeom.GetLeftCenter(_rct);
-				var tcy:Number = RxGeom.GetTopCenter(_rct);
-				//trace(tcx, tcy);
-				_mtr.translate(-tcx, -tcy);
-
-				_mtr.rotate(-tyrd);
-				_mtr.rotate(tnrd);
-				_mtr.translate(tcx, tcy);
-
-				pf_MakeRect();
-				return true;
-			}
-
-			return false;
-		}
+        private var _cnt:uint = 0;
+        public function ApplyMatrix():void
+        {
+            _tdo.transform.matrix = _mtr;
+            trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
+        }
 
 
-		public function SetScaleCenter(tsx:Number, tsy:Number):Boolean
-		{
-			if (tsx < 0.1) return false;
-			if (tsy < 0.1) return false;
+        public function SetRotateCenter(trd:Number):Boolean
+        {
+            var tyrd:Number = RxGeom.GetRadian1(_mtr);
+            var tnrd:Number = RxGeom.CheckRadian(trd);
+            //trace(tyrd, tnrd);
+            if (tnrd !== tyrd)
+            {
+                var tcx:Number = RxGeom.GetLeftCenter(_rct);
+                var tcy:Number = RxGeom.GetTopCenter(_rct);
+                //trace(tcx, tcy);
+                _mtr.translate(-tcx, -tcy);
 
-			var tysx:Number = RxGeom.GetScaleX(_mtr);
-			var tysy:Number = RxGeom.GetScaleY(_mtr);
-			//trace(tysx, tysy);
+                _mtr.rotate(-tyrd);
+                _mtr.rotate(tnrd);
+                _mtr.translate(tcx, tcy);
 
-			var tnsx:Number = RxGeom.DoubleRound(tsx);
-			var tnsy:Number = RxGeom.DoubleRound(tsy);
-			//trace(tnsx, tnsy);
+                pf_MakeRect();
+                return true;
+            }
 
-			if ((tysx !== tnsx) && (tysy !== tnsy))
-			{
-				var tcx:Number = RxGeom.GetLeftCenter(_rct);
-				var tcy:Number = RxGeom.GetTopCenter(_rct);
-				//trace(tcx, tcy);
-				_mtr.translate(-tcx, -tcy);
+            return false;
+        }
 
-            	var tbsx:Number = 1 / tysx;
-            	var tbsy:Number = 1 / tysy;
-				_mtr.scale(tbsx, tbsy);
-				_mtr.scale(tnsx, tnsy);
-				_mtr.translate(tcx, tcy);
 
-				pf_MakeRect();
-				return true;
-			}
+        public function SetScaleCenter(tsx:Number, tsy:Number):Boolean
+        {
+            if (tsx < 0.1) return false;
+            if (tsy < 0.1) return false;
 
-			return false;
-		}
+            var tysx:Number = RxGeom.GetScaleX(_mtr);
+            var tysy:Number = RxGeom.GetScaleY(_mtr);
+            //trace(tysx, tysy);
+
+            var tnsx:Number = RxGeom.DoubleRound(tsx);
+            var tnsy:Number = RxGeom.DoubleRound(tsy);
+            //trace(tnsx, tnsy);
+
+            if ((tysx !== tnsx) && (tysy !== tnsy))
+            {
+                var tcx:Number = RxGeom.GetLeftCenter(_rct);
+                var tcy:Number = RxGeom.GetTopCenter(_rct);
+                //trace(tcx, tcy);
+                _mtr.translate(-tcx, -tcy);
+
+                var tbsx:Number = 1 / tysx;
+                var tbsy:Number = 1 / tysy;
+                _mtr.scale(tbsx, tbsy);
+                _mtr.scale(tnsx, tnsy);
+                _mtr.translate(tcx, tcy);
+
+                pf_MakeRect();
+                return true;
+            }
+
+            return false;
+        }
 
 
 
@@ -183,7 +183,7 @@
             var tty:Number = 0;
             _mtr.translate(ttx, tty);
 
-			pf_MakeRect();
+            pf_MakeRect();
         }
 
         public function MoveTop(tv:Number):void
@@ -191,9 +191,9 @@
             var ttx:Number = 0;
             var tty:Number = tv - RxGeom.GetTop(_rct);
             _mtr.translate(ttx, tty);
-			_rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
-			pf_MakeRect();
+            pf_MakeRect();
         }
 
         //~~~~~~~~~~
@@ -202,9 +202,9 @@
             var ttx:Number = tv - RxGeom.GetLeftCenter(_rct);
             var tty:Number = 0;
             _mtr.translate(ttx, tty);
-			_rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
-			pf_MakeRect();
+            pf_MakeRect();
         }
 
         public function MoveTopCenter(tv:Number):void
@@ -212,9 +212,9 @@
             var ttx:Number = 0;
             var tty:Number = tv - RxGeom.GetTopCenter(_rct);
             _mtr.translate(ttx, tty);
-			_rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
-			pf_MakeRect();
+            pf_MakeRect();
         }
 
         //~~~~~~~~~~
@@ -223,20 +223,20 @@
             var ttx:Number = tx - RxGeom.GetLeftCenter(_rct);
             var tty:Number = ty - RxGeom.GetTopCenter(_rct);
             _mtr.translate(ttx, tty);
-			_rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
-			pf_MakeRect();
+            pf_MakeRect();
         }
 
-		//~~~~~~~~~~
-		public function MoveAt(tmx:Number, tmy:Number):void
-		{
-			_mtr.translate(-_mtr.tx, -_mtr.ty);
-			_mtr.translate(tmx, tmy);
-			_rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
+        //~~~~~~~~~~
+        public function MoveAt(tmx:Number, tmy:Number):void
+        {
+            _mtr.translate(-_mtr.tx, -_mtr.ty);
+            _mtr.translate(tmx, tmy);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
-			pf_MakeRect();
-		}
+            pf_MakeRect();
+        }
 
 
 
@@ -254,6 +254,6 @@
         }
 
 
-	}
+    }
 
 }

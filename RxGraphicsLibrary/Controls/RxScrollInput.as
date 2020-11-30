@@ -12,7 +12,7 @@
     import flash.text.TextField;
     import flash.events.KeyboardEvent;
     import flash.ui.Keyboard;
-	import RxGraphicsLibrary.Tools.RxDoubleAffair;
+    import RxGraphicsLibrary.Tools.RxDoubleAffair;
 
 
 
@@ -23,8 +23,8 @@
                             rxsbnm:String ='mvc_rxsb', txbnm:String = 'txb',
                             tsz:Number = 400, tssr:Number = 1.0, tpr:Number = 0.0,
                             minval:Number = 0.0, maxval:Number = 1.0, val:Number = 0.0,
-							tvga:Vector.<Number> = null, tfd:uint = 1,
-							tcbf:Function = null)
+                            tvga:Vector.<Number> = null, tfd:uint = 1,
+                            tcbf:Function = null)
         {
             _cont = cont;
             _cont.tabEnabled = false;
@@ -76,7 +76,7 @@
         }
         public function SetVal(tv:Number):void
         {
-			_rxdbaff.SetValue(tv);
+            _rxdbaff.SetValue(tv);
 
             var tpr:Number = _rxdbaff.GetRatio();
             _rxsb.SetPositionRatio(tpr);
@@ -172,10 +172,10 @@
             }
         }
 
-		public function CallMouseWheelHandler(te:MouseEvent):void
-		{
-			pf_mswh(te);
-		}
+        public function CallMouseWheelHandler(te:MouseEvent):void
+        {
+            pf_mswh(te);
+        }
     }
 }
 

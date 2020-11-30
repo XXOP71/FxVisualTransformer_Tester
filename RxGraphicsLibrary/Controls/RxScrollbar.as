@@ -100,7 +100,7 @@
 
 
 
-			/*
+            /*
             tx = _rctScrollArea.x - 5,
             tx = _rctScrollArea.x,
             ty = _rctScrollArea.y,
@@ -109,7 +109,7 @@
             _grp.beginFill(0x88ff11, 0.75);
             _grp.drawRect(tx, ty, tw, th);
             _grp.endFill();
-			*/
+            */
 
 
 
@@ -127,37 +127,37 @@
 
 
 
-			/*
+            /*
             _grp.lineStyle(10, 0xff0000);
             if (_type == TYPE_VERTICAL)
             {
-				_grp.moveTo(tx, ty + (th / 2));
-				_grp.lineTo(tx + tw, ty + (th / 2));
+                _grp.moveTo(tx, ty + (th / 2));
+                _grp.lineTo(tx + tw, ty + (th / 2));
             }
             else if (_type == TYPE_HORIZONTAL)
             {
-				_grp.moveTo(tx + (tw / 2), ty);
-				_grp.lineTo(tx + (tw / 2), ty + th);
+                _grp.moveTo(tx + (tw / 2), ty);
+                _grp.lineTo(tx + (tw / 2), ty + th);
             }*/
 
 
-			const tkxw:Number = 8;
-			var tkx:Number, tky:Number, tkw:Number, tkh:Number;
+            const tkxw:Number = 8;
+            var tkx:Number, tky:Number, tkw:Number, tkh:Number;
             if (_type == TYPE_VERTICAL)
             {
-				_grp.beginFill(0xff0000, 0.25);
-				tkx = tx, tky = ty + ((th / 2) - tkxw),
-				tkw = tw, tkh = tkxw * 2;
-				_grp.drawRect(tkx, tky, tkw, tkh);
-				_grp.endFill();
+                _grp.beginFill(0xff0000, 0.25);
+                tkx = tx, tky = ty + ((th / 2) - tkxw),
+                tkw = tw, tkh = tkxw * 2;
+                _grp.drawRect(tkx, tky, tkw, tkh);
+                _grp.endFill();
             }
             else if (_type == TYPE_HORIZONTAL)
             {
-				_grp.beginFill(0xff0000, 0.25);
-				tkx = tx + ((tw / 2) - tkxw), tky = ty,
-				tkw = tkxw * 2, tkh = th;
-				_grp.drawRect(tkx, tky, tkw, tkh);
-				_grp.endFill();
+                _grp.beginFill(0xff0000, 0.25);
+                tkx = tx + ((tw / 2) - tkxw), tky = ty,
+                tkw = tkxw * 2, tkh = th;
+                _grp.drawRect(tkx, tky, tkw, tkh);
+                _grp.endFill();
             }
 
         }
@@ -236,9 +236,9 @@
             }
 
             if (tv < 0)
-				tv = 0;
+                tv = 0;
             else if (tv > tf)
-				tv = tf;
+                tv = tf;
 
             if (tf == 0)
                 _positionRatio = 0;
@@ -249,10 +249,10 @@
 
 
             if (_fcbf != null)
-				_fcbf();
+                _fcbf();
 
             if (te != null)
-				te.updateAfterEvent();
+                te.updateAfterEvent();
         }
 
         private function pf_MouseUp(te:MouseEvent):void
