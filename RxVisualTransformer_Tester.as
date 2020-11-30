@@ -11,10 +11,12 @@
     import flash.geom.Point;
     import flash.geom.Matrix;
     import flash.ui.Keyboard;
+	import flash.text.TextField;
     import RxGraphicsLibrary.Controls.RxScrollbar;
     import RxGraphicsLibrary.Controls.RxScrollInput;
     import RxGraphicsLibrary.Controls.RxVisualTransformer;
     import RxGraphicsLibrary.Tools.RxGeom;
+    
 
 
 
@@ -90,6 +92,12 @@
                                 2, pf_rxsipHori__cbf);
 
 
+			
+			
+			_sprMatrixInfo = _owrt['mvcMatrixInfo'];
+			_sprMatrixInfo.mouseChildren = false;
+			_sprMatrixInfo.mouseEnabled = false;
+
 
 
 
@@ -124,7 +132,32 @@
 
         private var _rxsipVert:RxScrollInput;
         private var _rxsipHori:RxScrollInput;
+		
+		private var _sprMatrixInfo:Sprite;
 
+		
+		
+		private function pf_ApplyMatrix():void
+		{
+            _rxvt.ApplyMatrix();
+            _rxvt.DrawBorders(_grp);
+			
+			
+			var tmatr:Matrix = _rxvt.GetMatrix();
+			var ttf:TextField;			
+			ttf = _sprMatrixInfo['txbma'];
+			ttf.text = RxGeom.DoubleRound(tmatr.a).toString();
+			ttf = _sprMatrixInfo['txbmb'];
+			ttf.text = RxGeom.DoubleRound(tmatr.b).toString();
+			ttf = _sprMatrixInfo['txbmc'];
+			ttf.text = RxGeom.DoubleRound(tmatr.c).toString();
+			ttf = _sprMatrixInfo['txbmd'];
+			ttf.text = RxGeom.DoubleRound(tmatr.d).toString();
+			ttf = _sprMatrixInfo['txbmx'];
+			ttf.text = RxGeom.DoubleRound(tmatr.tx).toString();
+			ttf = _sprMatrixInfo['txbmy'];
+			ttf.text = RxGeom.DoubleRound(tmatr.ty).toString();
+		}
 
 
         private function pf_stage__resize(te:Event):void
@@ -169,14 +202,17 @@
 
             tty = _rctBounds.height + 110;
             _rxsipRotate.GetCont().y = tty;
+			
+			
+			_sprMatrixInfo.x = tsw - 260;
+			_sprMatrixInfo.y = tsh - 86;
 
 
 
             pf_ImageHeightUpdate();
             pf_ImageWidthUpdate();
 
-            _rxvt.ApplyMatrix();
-            _rxvt.DrawBorders(_grp);
+            pf_ApplyMatrix();
         }
 
         private function pf_ImageHeightUpdate():void
@@ -240,8 +276,7 @@
                 pf_ImageHeightUpdate();
                 pf_ImageWidthUpdate();
 
-                _rxvt.ApplyMatrix();
-                _rxvt.DrawBorders(_grp);
+                pf_ApplyMatrix();
             }
         }
 
@@ -254,8 +289,7 @@
                 pf_ImageHeightUpdate();
                 pf_ImageWidthUpdate();
 
-                _rxvt.ApplyMatrix();
-                _rxvt.DrawBorders(_grp);
+                pf_ApplyMatrix();
             }
         }
 
@@ -276,8 +310,7 @@
 
                 _rxvt.MoveTop(tiy);
 
-                _rxvt.ApplyMatrix();
-                _rxvt.DrawBorders(_grp);
+                pf_ApplyMatrix();
             }
         }
 
@@ -297,8 +330,7 @@
 
                 _rxvt.MoveLeft(tix);
 
-                _rxvt.ApplyMatrix();
-                _rxvt.DrawBorders(_grp);
+                pf_ApplyMatrix();
             }
         }
 
@@ -406,8 +438,8 @@
 
             //trace(tmx, tmy);
             _rxvt.MoveCenter(tmx, tmy);
-            _rxvt.ApplyMatrix();
-            _rxvt.DrawBorders(_grp);
+			
+            pf_ApplyMatrix();
 
 
             pf_scrollSetFx__Vert();
