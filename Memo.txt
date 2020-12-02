@@ -8,3 +8,6 @@
 
 
 ...
+
+
+##____Legacy/FxVisualTransformer_Tester 를 사용해서 마우스휠 확대 알고리즘 변경

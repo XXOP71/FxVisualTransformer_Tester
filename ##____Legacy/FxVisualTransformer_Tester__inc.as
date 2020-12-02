@@ -277,9 +277,20 @@ function pf_InitOnce():void
 			//_fxvt.DrawBounds(_grp);
 		});
 
-
+	var __rr:Number = 1;
 	_sprArea.addEventListener(MouseEvent.MOUSE_WHEEL,
 		function(te:MouseEvent):void {
+			
+			var tcx:Number = _owrt.mouseX;
+			var tcy:Number = _owrt.mouseY;
+			
+			if (te.delta < 0) __rr -= 0.3;
+			else if (te.delta > 0) __rr += 0.3;
+			_fxvt.SetScaleAt(tcx, tcy, __rr, __rr);
+			_fxvt.DrawBounds(_grp);
+			//pf_ImageSizeUpdate();
+			
+			/*
 			if (te.altKey)
 			{
 				_fxsipRotation.CallMouseWheelHandler(te);
@@ -287,7 +298,7 @@ function pf_InitOnce():void
 			else
 			{
 				_fxsipScale.CallMouseWheelHandler(te);
-			}
+			}*/
 		});
 
 
