@@ -67,7 +67,7 @@
                                 300, 0.1, 0.0,
                                 0.3, 5.0, 1.0,
                                 new <Number>[0.01, 1.0, 0.001, 0.1],//(Normal),(Ctrl+Shift),(Ctrl),(Shift)
-                                3, pf_rxsbScale__Update);
+                                3, pf_rxsipScale__Update);
 
             _rxsipRotate = new RxScrollInput(
                                 _owrt['mvc_rxsipRotate'], RxScrollbar.TYPE_HORIZONTAL, 'mvc_rxsb', 'txb',
@@ -82,7 +82,7 @@
                                 600, 1.0, 0.0,
                                 0.0, 1.0, 0.5,
                                 new <Number>[0.01, 1.0, 0.001, 0.1],
-                                2, pf_rxsiVert__cbf);
+                                2, pf_rxsipVert__cbf);
 
             _rxsipHori = new RxScrollInput(
                                 _owrt['mvc_rxsipHori'], RxScrollbar.TYPE_HORIZONTAL, 'mvc_rxsb', 'txb',
@@ -215,7 +215,7 @@
             pf_ApplyMatrix();
         }
 
-        private function pf_ImageHeightUpdate():void
+        private function pf_ImageHeightUpdate(tb:Boolean = true):void
         {
             var rctArea:Rectangle = _rctArea;
             var rctImg:Rectangle = _rxvt.GetRect();
@@ -225,23 +225,26 @@
             var tssrh:Number = tmh / tih;
 
             _rxsipVert.GetScrollbar().SetScrollSizeRatio(tssrh);
-            if (tssrh < 1)
-            {
-                var tssh:Number = tih - tmh;
-                var tprh:Number = _rxsipVert.GetScrollbar().GetPositionRatio();
-                var tiy:Number = rctArea.top - (tssh * tprh);
-
-                _rxvt.MoveTop(tiy);
-            }
-            else
-            {
-                var tmy:Number = RxGeom.GetTopCenter(rctArea);
-
-                _rxvt.MoveTopCenter(tmy);
-            }
+			if (tb)
+			{
+				if (tssrh < 1)
+				{
+					var tssh:Number = tih - tmh;
+					var tprh:Number = _rxsipVert.GetScrollbar().GetPositionRatio();
+					var tiy:Number = rctArea.top - (tssh * tprh);
+	
+					_rxvt.MoveTop(tiy);
+				}
+				else
+				{
+					var tmy:Number = RxGeom.GetTopCenter(rctArea);
+	
+					_rxvt.MoveTopCenter(tmy);
+				}
+			}
         }
 
-        private function pf_ImageWidthUpdate():void
+        private function pf_ImageWidthUpdate(tb:Boolean = true):void
         {
             var rctArea:Rectangle = _rctArea;
             var rctImg:Rectangle = _rxvt.GetRect();
@@ -251,24 +254,27 @@
             var tssrw:Number = tmw / tiw;
 
             _rxsipHori.GetScrollbar().SetScrollSizeRatio(tssrw);
-            if (tssrw < 1)
-            {
-                var tssw:Number = tiw - tmw;
-                var tprw:Number = _rxsipHori.GetScrollbar().GetPositionRatio();
-                var tix:Number = rctArea.left - (tssw * tprw);
-
-                _rxvt.MoveLeft(tix);
-            }
-            else
-            {
-                var tmx:Number = RxGeom.GetLeftCenter(rctArea);
-
-                _rxvt.MoveLeftCenter(tmx);
-            }
+			if (tb)
+			{
+				if (tssrw < 1)
+				{
+					var tssw:Number = tiw - tmw;
+					var tprw:Number = _rxsipHori.GetScrollbar().GetPositionRatio();
+					var tix:Number = rctArea.left - (tssw * tprw);
+	
+					_rxvt.MoveLeft(tix);
+				}
+				else
+				{
+					var tmx:Number = RxGeom.GetLeftCenter(rctArea);
+	
+					_rxvt.MoveLeftCenter(tmx);
+				}
+			}
         }
 
 
-        private function pf_rxsbScale__Update():void
+        private function pf_rxsipScale__Update():void
         {
             var tsa:Number = _rxsipScale.GetVal();
             if (_rxvt.SetScaleCenter(tsa, tsa))
@@ -294,7 +300,7 @@
         }
 
 
-        private function pf_rxsiVert__cbf():void
+        private function pf_rxsipVert__cbf():void
         {
             var rctArea:Rectangle = _rctArea;
             var rctImg:Rectangle = _rxvt.GetRect();
@@ -366,46 +372,42 @@
         }
 
 
-        private function pf_sprArea__mouseWheel(te:MouseEvent):void
-        {
-            if (te.altKey)
-            {
-                _rxsipRotate.CallMouseWheelHandler(te);
-            }
-            else
-            {
-                _rxsipScale.CallMouseWheelHandler(te);
-            }
-        }
+		private function pf_sprArea__mouseWheel(te:MouseEvent):void
+		{
+			if (te.altKey)
+			{
+				_rxsipRotate.CallMouseWheelHandler(te, true);
+			}
+			else
+			{				
+				_rxsipScale.CallMouseWheelHandler(te, false);
+				var tsa:Number = _rxsipScale.GetVal();
+				if (_rxvt.SetScaleAt(_owrt.mouseX, _owrt.mouseY, tsa, tsa))
+				{
+					pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());
+					
+					pf_ImageHeightUpdate(false);
+					pf_ImageWidthUpdate(false);
+					
+					pf_scrollSetFx__Vert();
+					pf_scrollSetFx__Hori();
+				}
+			}
+		}
 
 
 
-        private function pf_sprArea__mouseUp(te:MouseEvent):void
-        {
-            if (_mdpt == null) return;
-
-            _stg.removeEventListener(MouseEvent.MOUSE_UP, pf_sprArea__mouseUp);
-            _stg.removeEventListener(MouseEvent.MOUSE_MOVE, pf_sprArea__mouseMove);
-            _mdpt = null;
-        }
-
-        private function pf_sprArea__mouseMove(te:MouseEvent):void
-        {
-            if (_mdpt == null) return;
-
-            var tx_gl:Number = RxGeom.GetLeft(_rctArea) + (_rxvt.GetLeftCenter() - _rxvt.GetLeft());
-            var tx_gr:Number = RxGeom.GetRight(_rctArea) - (_rxvt.GetRight() - _rxvt.GetLeftCenter());
-            var tx_gt:Number = RxGeom.GetTop(_rctArea) + (_rxvt.GetTopCenter() - _rxvt.GetTop());
-            var tx_gb:Number = RxGeom.GetBottom(_rctArea) - (_rxvt.GetBottom() - _rxvt.GetTopCenter());
+		private function pf_BeforeMove(tmx:Number, tmy:Number):void
+		{
+            var tx_gl:Number = RxGeom.GetLeft(_rctArea) + _rxvt.GetHalfWidth();
+            var tx_gr:Number = RxGeom.GetRight(_rctArea) - _rxvt.GetHalfWidth();
+            var tx_gt:Number = RxGeom.GetTop(_rctArea) + _rxvt.GetHalfHeight();
+            var tx_gb:Number = RxGeom.GetBottom(_rctArea) - _rxvt.GetHalfHeight();
             //trace(tx_gl, tx_gr, tx_gt, tx_gb);
 
             var tx_d:Number = RxGeom.GetWidth(_rctArea) - _rxvt.GetWidth();
             var ty_d:Number = RxGeom.GetHeight(_rctArea) - _rxvt.GetHeight();
             //trace(tx_d, ty_d);
-
-            var tmx:Number = _owrt.mouseX - _mdpt.x;
-            var tmy:Number = _owrt.mouseY - _mdpt.y;
-            //trace(tmx, tmy);
 
 
             if (tx_d < 0)
@@ -440,7 +442,22 @@
             _rxvt.MoveCenter(tmx, tmy);
 			
             pf_ApplyMatrix();
+		}
 
+        private function pf_sprArea__mouseUp(te:MouseEvent):void
+        {
+            if (_mdpt == null) return;
+
+            _stg.removeEventListener(MouseEvent.MOUSE_UP, pf_sprArea__mouseUp);
+            _stg.removeEventListener(MouseEvent.MOUSE_MOVE, pf_sprArea__mouseMove);
+            _mdpt = null;
+        }
+
+        private function pf_sprArea__mouseMove(te:MouseEvent):void
+        {
+            if (_mdpt == null) return;
+			
+			pf_BeforeMove(_owrt.mouseX - _mdpt.x, _owrt.mouseY - _mdpt.y);
 
             pf_scrollSetFx__Vert();
             pf_scrollSetFx__Hori();

@@ -175,6 +175,48 @@
 		{
 			pf_mswh(te);
 		}
+		
+		
+
+
+
+
+
+
+
+
+
+        public function fn_xxa(te:MouseEvent):void
+        {
+            var tn:uint = 1;
+            if (te.ctrlKey && te.shiftKey)
+                tn = 2;
+            else if (te.ctrlKey)
+                tn = 3;
+            else if (te.shiftKey)
+                tn = 4;
+
+            if (te.delta > 0)
+            {
+                _rxdbaff.ValueUpDown('up', tn);
+				
+				var tpr:Number = _rxdbaff.GetRatio();
+				_rxsb.SetPositionRatio(tpr);
+	
+				_txb.text = _rxdbaff.GetValueFixed();
+            }
+            else if (te.delta < 0)
+            {
+                _rxdbaff.ValueUpDown('down', tn);
+				
+				var tpr:Number = _rxdbaff.GetRatio();
+				_rxsb.SetPositionRatio(tpr);
+	
+				_txb.text = _rxdbaff.GetValueFixed();
+            }
+        }
+		
+		
     }
 }
 

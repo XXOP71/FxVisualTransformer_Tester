@@ -158,10 +158,39 @@
 		}
 		
 		
-		public function SetScaleCenter(tsx:Number, tsy:Number):void
-		{
-			const txx:Number = 0.001;
+		public function SetScaleAt(tcx:Number, tcy:Number, tsx:Number, tsy:Number):void
+		{			
+			if (tsx < 0.1) return;
+			if (tsy < 0.1) return;
 			
+			var tysx:Number = RxGeom.GetScaleX(_mtr);
+			var tysy:Number = RxGeom.GetScaleY(_mtr);
+			//trace(tysx, tysy);
+			
+			var tnsx:Number = RxGeom.DoubleRound(tsx);
+			var tnsy:Number = RxGeom.DoubleRound(tsy);
+			//trace(tnsx, tnsy);
+			
+			if ((tysx !== tnsx) && (tysy !== tnsy))
+			{
+				//var tcx:Number = RxGeom.GetLeftCenter(_rct);
+				//var tcy:Number = RxGeom.GetTopCenter(_rct);
+				//trace(tcx, tcy);
+				_mtr.translate(-tcx, -tcy);
+				
+            	var tbsx:Number = 1 / tysx;
+            	var tbsy:Number = 1 / tysy;
+				_mtr.scale(tbsx, tbsy);				
+				_mtr.scale(tnsx, tnsy);
+				_mtr.translate(tcx, tcy);
+				
+				pf_ApplyMatrix();
+			}
+		}		
+		
+		
+		public function SetScaleCenter(tsx:Number, tsy:Number):void
+		{			
 			if (tsx < 0.1) return;
 			if (tsy < 0.1) return;
 			

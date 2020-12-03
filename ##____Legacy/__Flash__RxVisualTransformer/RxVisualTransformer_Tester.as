@@ -320,13 +320,20 @@
 		
 		private function pf_sprArea__mouseWheel(te:MouseEvent):void
 		{
+			return;
 			if (te.altKey)
 			{
 				_rxsipRotate.CallMouseWheelHandler(te);
 			}
 			else
 			{
-				_rxsipScale.CallMouseWheelHandler(te);
+				//_rxsipScale.CallMouseWheelHandler(te);
+				
+//				_rxsipScale.fn_xxa(te);
+//				var tsa:Number = _rxsipScale.GetVal();
+//				_rxvt.SetScaleCenter(tsa, tsa);				
+//				_rxvt.SetScaleAt(_owrt.mouseX, _owrt.mouseY, tsa, tsa);
+//				_rxvt.DrawBorders(_grp);
 			}
 		}
 		

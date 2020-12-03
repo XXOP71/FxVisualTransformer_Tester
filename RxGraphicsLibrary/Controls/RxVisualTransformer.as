@@ -173,6 +173,40 @@
 
             return false;
         }
+		
+		
+		public function SetScaleAt(tcx:Number, tcy:Number, tsx:Number, tsy:Number):Boolean
+		{
+            if (tsx < 0.1) return false;
+            if (tsy < 0.1) return false;
+
+            var tysx:Number = RxGeom.GetScaleX(_mtr);
+            var tysy:Number = RxGeom.GetScaleY(_mtr);
+            //trace(tysx, tysy);
+
+            var tnsx:Number = RxGeom.DoubleRound(tsx);
+            var tnsy:Number = RxGeom.DoubleRound(tsy);
+            //trace(tnsx, tnsy);
+
+            if ((tysx !== tnsx) && (tysy !== tnsy))
+            {
+//                var tcx:Number = RxGeom.GetLeftCenter(_rct);
+//                var tcy:Number = RxGeom.GetTopCenter(_rct);
+                //trace(tcx, tcy);
+                _mtr.translate(-tcx, -tcy);
+
+                var tbsx:Number = 1 / tysx;
+                var tbsy:Number = 1 / tysy;
+                _mtr.scale(tbsx, tbsy);
+                _mtr.scale(tnsx, tnsy);
+                _mtr.translate(tcx, tcy);
+
+                pf_MakeRect();
+                return true;
+            }
+
+            return false;
+		}		
 
 
 
@@ -242,7 +276,7 @@
 
 
         public function DrawBorders(tgrp:Graphics):void
-        {
+        {return;
             tgrp.clear();
             tgrp.lineStyle(5, 0xff0000, 0.35);
             tgrp.beginFill(0x00ff00, 0.15);

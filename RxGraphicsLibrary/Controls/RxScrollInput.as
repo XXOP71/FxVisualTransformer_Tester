@@ -41,7 +41,7 @@
             _rxdbaff = new RxDoubleAffair(minval, maxval, val, tvga, tfd);
             _txb.text = _rxdbaff.GetValueFixed();
 
-            pf_val_upt();
+            pf_val_upt(false);
 
 
             _cbf = tcbf;
@@ -117,19 +117,19 @@
                 _cbf();
         }
 
-        private function pf_val_upt():void
+        private function pf_val_upt(tb:Boolean):void
         {
             var tpr:Number = _rxdbaff.GetRatio();
             _rxsb.SetPositionRatio(tpr);
 
             _txb.text = _rxdbaff.GetValueFixed();
 
-            if (_cbf != null)
+            if (tb && (_cbf != null))
                 _cbf();
         }
-
-        private function pf_keyduan(te:KeyboardEvent):void
-        {
+		
+		private function pf_comupt(te:*, tt:String, tb:Boolean):void
+		{			
             var ti:uint = 0;
             if (te.ctrlKey && te.shiftKey)
                 ti = 1;
@@ -137,45 +137,48 @@
                 ti = 2;
             else if (te.shiftKey)
                 ti = 3;
+				
+			_rxdbaff.ValueUpDown(tt, ti);
+			pf_val_upt(tb);
+		}
 
+        private function pf_keyduan(te:KeyboardEvent):void
+        {
             if (te.keyCode == Keyboard.UP)
             {
-                _rxdbaff.ValueUpDown('u', ti);
-                pf_val_upt();
+				pf_comupt(te, 'u', true);
             }
             else if (te.keyCode == Keyboard.DOWN)
             {
-                _rxdbaff.ValueUpDown('d', ti);
-                pf_val_upt();
+				pf_comupt(te, 'd', true);
             }
         }
 
         private function pf_mswh(te:MouseEvent):void
         {
-            var ti:uint = 0;
-            if (te.ctrlKey && te.shiftKey)
-                ti = 1;
-            else if (te.ctrlKey)
-                ti = 2;
-            else if (te.shiftKey)
-                ti = 3;
-
             if (te.delta > 0)
             {
-                _rxdbaff.ValueUpDown('u', ti);
-                pf_val_upt();
+				pf_comupt(te, 'u', true);
             }
             else if (te.delta < 0)
             {
-                _rxdbaff.ValueUpDown('d', ti);
-                pf_val_upt();
+				pf_comupt(te, 'd', true);
             }
         }
 
-        public function CallMouseWheelHandler(te:MouseEvent):void
+
+        public function CallMouseWheelHandler(te:MouseEvent, tb:Boolean):void
         {
-            pf_mswh(te);
+            if (te.delta > 0)
+            {
+				pf_comupt(te, 'u', tb);
+            }
+            else if (te.delta < 0)
+            {
+				pf_comupt(te, 'd', tb);
+            }
         }
+		
     }
 }
 
