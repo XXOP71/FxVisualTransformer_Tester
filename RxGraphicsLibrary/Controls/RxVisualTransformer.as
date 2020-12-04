@@ -106,14 +106,14 @@
 
         private function pf_MakeRect():void
         {
-            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 100, 100);
         }
 
-        private var _cnt:uint = 0;
+        //private var _cnt:uint = 0;
         public function ApplyMatrix():void
         {
             _tdo.transform.matrix = _mtr;
-            trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
+            //trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
         }
 
 
@@ -134,11 +134,32 @@
                 _mtr.translate(tcx, tcy);
 
                 pf_MakeRect();
+				
                 return true;
             }
 
             return false;
         }
+        public function SetRotateAt(tcx:Number, tcy:Number, trd:Number):Boolean
+        {
+            var tyrd:Number = RxGeom.GetRadian1(_mtr);
+            var tnrd:Number = RxGeom.CheckRadian(trd);
+            //trace(tyrd, tnrd);
+            if (tnrd !== tyrd)
+            {
+                _mtr.translate(-tcx, -tcy);
+
+                _mtr.rotate(-tyrd);
+                _mtr.rotate(tnrd);
+                _mtr.translate(tcx, tcy);
+
+                pf_MakeRect();
+				
+                return true;
+            }
+
+            return false;
+        }		
 
 
         public function SetScaleCenter(tsx:Number, tsy:Number):Boolean
@@ -168,13 +189,12 @@
                 _mtr.translate(tcx, tcy);
 
                 pf_MakeRect();
+				
                 return true;
             }
 
             return false;
-        }
-		
-		
+        }		
 		public function SetScaleAt(tcx:Number, tcy:Number, tsx:Number, tsy:Number):Boolean
 		{
             if (tsx < 0.1) return false;
@@ -202,6 +222,7 @@
                 _mtr.translate(tcx, tcy);
 
                 pf_MakeRect();
+				
                 return true;
             }
 
@@ -274,17 +295,20 @@
 
 
 
-
+		public var bDraw:Boolean = false; 
         public function DrawBorders(tgrp:Graphics):void
-        {return;
-            tgrp.clear();
-            tgrp.lineStyle(5, 0xff0000, 0.35);
-            tgrp.beginFill(0x00ff00, 0.15);
-            tgrp.drawRect(_rct.x, _rct.y, _rct.width, _rct.height);
-            tgrp.moveTo(_rct.left, _rct.top);
-            tgrp.lineTo(_rct.right, _rct.bottom);
-            tgrp.moveTo(_rct.left, _rct.bottom);
-            tgrp.lineTo(_rct.right, _rct.top);
+        {
+			if (bDraw)
+			{
+				tgrp.clear();
+				tgrp.lineStyle(5, 0xff0000, 0.35);
+				tgrp.beginFill(0x00ff00, 0.15);
+				tgrp.drawRect(_rct.x, _rct.y, _rct.width, _rct.height);
+				tgrp.moveTo(_rct.left, _rct.top);
+				tgrp.lineTo(_rct.right, _rct.bottom);
+				tgrp.moveTo(_rct.left, _rct.bottom);
+				tgrp.lineTo(_rct.right, _rct.top);
+			}
         }
 
 

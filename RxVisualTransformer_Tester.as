@@ -205,7 +205,7 @@
 			
 			
 			_sprMatrixInfo.x = tsw - 260;
-			_sprMatrixInfo.y = tsh - 86;
+			_sprMatrixInfo.y = tsh - 114;
 
 
 
@@ -376,11 +376,25 @@
 		{
 			if (te.altKey)
 			{
-				_rxsipRotate.CallMouseWheelHandler(te, true);
+				_rxsipRotate.CallMouseWheelHandler(te, false);
+				
+            	var tag:Number = _rxsipRotate.GetVal();
+            	var trd:Number = RxGeom.GetAngleToRadian(tag);
+				if (_rxvt.SetRotateAt(_owrt.mouseX, _owrt.mouseY, trd))
+				{
+					pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());
+					
+					pf_ImageHeightUpdate(false);
+					pf_ImageWidthUpdate(false);
+					
+					pf_scrollSetFx__Vert();
+					pf_scrollSetFx__Hori();
+				}
 			}
 			else
 			{				
 				_rxsipScale.CallMouseWheelHandler(te, false);
+				
 				var tsa:Number = _rxsipScale.GetVal();
 				if (_rxvt.SetScaleAt(_owrt.mouseX, _owrt.mouseY, tsa, tsa))
 				{
@@ -399,19 +413,14 @@
 
 		private function pf_BeforeMove(tmx:Number, tmy:Number):void
 		{
-            var tx_gl:Number = RxGeom.GetLeft(_rctArea) + _rxvt.GetHalfWidth();
-            var tx_gr:Number = RxGeom.GetRight(_rctArea) - _rxvt.GetHalfWidth();
-            var tx_gt:Number = RxGeom.GetTop(_rctArea) + _rxvt.GetHalfHeight();
-            var tx_gb:Number = RxGeom.GetBottom(_rctArea) - _rxvt.GetHalfHeight();
-            //trace(tx_gl, tx_gr, tx_gt, tx_gb);
-
             var tx_d:Number = RxGeom.GetWidth(_rctArea) - _rxvt.GetWidth();
             var ty_d:Number = RxGeom.GetHeight(_rctArea) - _rxvt.GetHeight();
-            //trace(tx_d, ty_d);
-
 
             if (tx_d < 0)
             {
+				var tx_gl:Number = RxGeom.GetLeft(_rctArea) + _rxvt.GetHalfWidth();
+				var tx_gr:Number = RxGeom.GetRight(_rctArea) - _rxvt.GetHalfWidth();
+				
                 if (tmx > tx_gl)
                     tmx = tx_gl;
                 else if (tmx < tx_gr)
@@ -426,6 +435,9 @@
 
             if (ty_d < 0)
             {
+				var tx_gt:Number = RxGeom.GetTop(_rctArea) + _rxvt.GetHalfHeight();
+				var tx_gb:Number = RxGeom.GetBottom(_rctArea) - _rxvt.GetHalfHeight();
+				
                 if (tmy > tx_gt)
                     tmy = tx_gt;
                 else if (tmy < tx_gb)
@@ -437,8 +449,7 @@
                     RxGeom.GetHalfHeight(_rctArea);
             }
 
-
-            //trace(tmx, tmy);
+            
             _rxvt.MoveCenter(tmx, tmy);
 			
             pf_ApplyMatrix();
