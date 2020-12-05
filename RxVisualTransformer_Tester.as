@@ -380,7 +380,8 @@
 				
             	var tag:Number = _rxsipRotate.GetVal();
             	var trd:Number = RxGeom.GetAngleToRadian(tag);
-				if (_rxvt.SetRotateAt(_owrt.mouseX, _owrt.mouseY, trd))
+				if (_rxvt.SetRotateAt(RxGeom.GetLeftCenter(_rctArea), RxGeom.GetTopCenter(_rctArea), trd))
+				//if (_rxvt.SetRotateAt(_owrt.mouseX, _owrt.mouseY, trd))
 				{
 					pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());
 					
@@ -396,7 +397,8 @@
 				_rxsipScale.CallMouseWheelHandler(te, false);
 				
 				var tsa:Number = _rxsipScale.GetVal();
-				if (_rxvt.SetScaleAt(_owrt.mouseX, _owrt.mouseY, tsa, tsa))
+				if (_rxvt.SetScaleAt(RxGeom.GetLeftCenter(_rctArea), RxGeom.GetTopCenter(_rctArea), tsa, tsa))
+				//if (_rxvt.SetScaleAt(_owrt.mouseX, _owrt.mouseY, tsa, tsa))
 				{
 					pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());
 					
