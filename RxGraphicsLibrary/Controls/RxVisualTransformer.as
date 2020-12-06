@@ -246,7 +246,6 @@
             var ttx:Number = 0;
             var tty:Number = tv - RxGeom.GetTop(_rct);
             _mtr.translate(ttx, tty);
-            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
             pf_MakeRect();
         }
@@ -257,7 +256,6 @@
             var ttx:Number = tv - RxGeom.GetLeftCenter(_rct);
             var tty:Number = 0;
             _mtr.translate(ttx, tty);
-            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
             pf_MakeRect();
         }
@@ -267,7 +265,6 @@
             var ttx:Number = 0;
             var tty:Number = tv - RxGeom.GetTopCenter(_rct);
             _mtr.translate(ttx, tty);
-            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
             pf_MakeRect();
         }
@@ -278,7 +275,6 @@
             var ttx:Number = tx - RxGeom.GetLeftCenter(_rct);
             var tty:Number = ty - RxGeom.GetTopCenter(_rct);
             _mtr.translate(ttx, tty);
-            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
             pf_MakeRect();
         }
@@ -288,7 +284,6 @@
         {
             _mtr.translate(-_mtr.tx, -_mtr.ty);
             _mtr.translate(tmx, tmy);
-            _rct = RxGeom.GetBounds(_drct, _mtr, 40, 40);
 
             pf_MakeRect();
         }

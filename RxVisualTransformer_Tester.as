@@ -204,29 +204,33 @@
 			_sprRectInfo.y = tsh - 114;			
 
 
-
-//            pf_ImageHeightUpdate(true);
-//            pf_ImageWidthUpdate(true);
-
-			var tcx:Number = RxGeom.GetLeftCenter(_rctArea);
-			var tcy:Number = RxGeom.GetTopCenter(_rctArea);
 			
-            var tag:Number = _rxsipRotate.GetValue();
-            var trd:Number = RxGeom.GetAngleToRadian(tag);
-            if (_rxvt.SetRotateAt(tcx, tcy, trd) || true)
-            {
-				trace(1);
-				pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());
+			if (te == null)
+			{
+				pf_ImageHeightUpdate(true);
+				pf_ImageWidthUpdate(true);
 				
-                pf_ImageHeightUpdate(false);
-                pf_ImageWidthUpdate(false);
-
-				pf_scrollSetFx__Vert();
-				pf_scrollSetFx__Hori();
-            }
+				pf_ApplyMatrix();
+			}
+			else			
+			{
+				var tcx:Number = RxGeom.GetLeftCenter(_rctArea);
+				var tcy:Number = RxGeom.GetTopCenter(_rctArea);
 				
-
-            pf_ApplyMatrix();
+				var tag:Number = _rxsipRotate.GetValue();
+				var trd:Number = RxGeom.GetAngleToRadian(tag);
+				if (_rxvt.SetRotateAt(tcx, tcy, trd) || true)
+				{
+					trace(1);
+					pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());
+					
+					pf_ImageHeightUpdate(false);
+					pf_ImageWidthUpdate(false);
+	
+					pf_scrollSetFx__Vert();
+					pf_scrollSetFx__Hori();
+				}
+			}            
         }
 		
 		
