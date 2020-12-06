@@ -79,12 +79,21 @@
         }
 
 
+        public function GetMaxValue():Number
+        {
+            return _maxval;
+        }
+		
+        public function GetMinValue():Number
+        {
+            return _minval;
+        }		
+
 
         public function GetValue():Number
         {
             return _val;
         }
-
         public function SetValue(tv:Number):void
         {
             if (tv < _minval)

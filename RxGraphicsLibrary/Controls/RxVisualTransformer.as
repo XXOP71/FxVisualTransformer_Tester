@@ -109,11 +109,11 @@
             _rct = RxGeom.GetBounds(_drct, _mtr, 100, 100);
         }
 
-        //private var _cnt:uint = 0;
+        private var _cnt:uint = 0;
         public function ApplyMatrix():void
         {
             _tdo.transform.matrix = _mtr;
-            //trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
+            trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
         }
 
 

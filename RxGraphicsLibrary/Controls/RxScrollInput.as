@@ -69,12 +69,62 @@
         {
             return _rxdbaff;
         }
+		
 
-        public function GetVal():Number
+        public function GetContX():Number
+        {
+            return _cont.x;
+        }
+        public function SetContX(tv:Number):void
+        {
+            _cont.x = tv;
+        }
+		
+        public function GetContY():Number
+        {
+            return _cont.y;
+        }
+        public function SetContY(tv:Number):void
+        {
+            _cont.y = tv;
+        }
+		
+
+        public function GetScrollbarSize():Number
+        {
+            return _rxsb.GetSize();
+        }
+        public function SetScrollbarSize(tv:Number):void
+        {
+            _rxsb.SetSize(tv);
+        }
+		
+		
+        public function GetScrollSizeRatio():Number
+        {
+            return _rxsb.GetScrollSizeRatio();
+        }
+        public function SetScrollSizeRatio(tr:Number):void
+        {
+            _rxsb.SetScrollSizeRatio(tr);
+        }
+		
+		
+        public function GetScrollRatio():Number
+        {
+            return _rxsb.GetPositionRatio();
+        }
+        public function SetScrollRatio(tr:Number):void
+        {
+            return _rxsb.SetPositionRatio(tr);
+        }
+		
+
+        public function GetValue():Number
         {
             return _rxdbaff.GetValue();
         }
-        public function SetVal(tv:Number):void
+        public function SetValue(tv:Number):void
         {
             _rxdbaff.SetValue(tv);
 
