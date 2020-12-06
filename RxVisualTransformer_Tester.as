@@ -85,14 +85,14 @@
             _rxsipVert = new RxScrollInput(
                                 _owrt['mvc_rxsipVert'], RxScrollbar.TYPE_VERTICAL, 'mvc_rxsb', 'txb',
                                 600, 1.0, 0.0,
-                                0.0, 1.0, 0.5,
+                                0.0, 1.0, 0.0,
                                 new <Number>[0.01, 1.0, 0.001, 0.1],
                                 2, pf_rxsipVert__cbf);
 
             _rxsipHori = new RxScrollInput(
                                 _owrt['mvc_rxsipHori'], RxScrollbar.TYPE_HORIZONTAL, 'mvc_rxsb', 'txb',
                                 700, 1.0, 0.0,
-                                0.0, 1.0, 0.5,
+                                0.0, 1.0, 0.0,
                                 new <Number>[0.01, 1.0, 0.001, 0.1],
                                 2, pf_rxsipHori__cbf);
 
@@ -198,12 +198,33 @@
 			
 			
 			_sprMatrixInfo.x = tsw - 260;
-			_sprMatrixInfo.y = tsh - 114;
+			_sprMatrixInfo.y = tsh - 114;			
+			
+			_sprRectInfo.x = tsw - (264 + 190);
+			_sprRectInfo.y = tsh - 114;			
 
 
 
-            pf_ImageHeightUpdate(true);
-            pf_ImageWidthUpdate(true);
+//            pf_ImageHeightUpdate(true);
+//            pf_ImageWidthUpdate(true);
+
+			var tcx:Number = RxGeom.GetLeftCenter(_rctArea);
+			var tcy:Number = RxGeom.GetTopCenter(_rctArea);
+			
+            var tag:Number = _rxsipRotate.GetValue();
+            var trd:Number = RxGeom.GetAngleToRadian(tag);
+            if (_rxvt.SetRotateAt(tcx, tcy, trd) || true)
+            {
+				trace(1);
+				pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());
+				
+                pf_ImageHeightUpdate(false);
+                pf_ImageWidthUpdate(false);
+
+				pf_scrollSetFx__Vert();
+				pf_scrollSetFx__Hori();
+            }
+				
 
             pf_ApplyMatrix();
         }
