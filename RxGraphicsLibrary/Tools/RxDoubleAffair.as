@@ -59,6 +59,61 @@
             }
         }
 
+
+
+        public function GetMinValue():Number
+        {
+            return _minval;
+        }
+        public function SetMinValue(tv:Number):void
+        {
+			_minval = tv;
+
+            if (_minval > _maxval)
+                _minval = _maxval;
+
+            if (_val < _minval)
+                _val = _minval;
+        }
+
+
+        public function GetMaxValue():Number
+        {
+            return _maxval;
+        }
+        public function SetMaxValue(tv:Number):void
+        {
+			_maxval = tv;
+
+            if (_maxval < _minval)
+                _maxval = _minval;
+
+            if (_val > _maxval)
+                _val = _maxval;
+        }
+
+
+        public function GetValue():Number
+        {
+            return _val;
+        }
+        public function SetValue(tv:Number):void
+        {
+            if (tv < _minval)
+                tv = _minval;
+            else if (tv > _maxval)
+                tv = _maxval;
+
+            _val = tv;
+        }
+
+
+        public function GetValueFixed():String
+        {
+            return _val.toFixed(_fd);
+        }
+
+
         public function GetRatio():Number
         {
             var tsv:Number = _maxval - _minval;
@@ -76,37 +131,6 @@
             var tsv:Number = _maxval - _minval;
             if (tsv < 0) tsv = 0;
             _val = _minval + (tsv * tr);
-        }
-
-
-        public function GetMaxValue():Number
-        {
-            return _maxval;
-        }
-		
-        public function GetMinValue():Number
-        {
-            return _minval;
-        }		
-
-
-        public function GetValue():Number
-        {
-            return _val;
-        }
-        public function SetValue(tv:Number):void
-        {
-            if (tv < _minval)
-                tv = _minval;
-            else if (tv > _maxval)
-                tv = _maxval;
-
-            _val = tv;
-        }
-
-        public function GetValueFixed():String
-        {
-            return _val.toFixed(_fd);
         }
 
     }

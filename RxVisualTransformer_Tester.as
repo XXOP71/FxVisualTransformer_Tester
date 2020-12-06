@@ -102,6 +102,11 @@
 			_sprMatrixInfo = _owrt['mvcMatrixInfo'];
 			_sprMatrixInfo.mouseChildren = false;
 			_sprMatrixInfo.mouseEnabled = false;
+			
+			
+			_sprRectInfo = _owrt['mvcRectInfo'];
+			_sprRectInfo.mouseChildren = false;
+			_sprRectInfo.mouseEnabled = false;			
 
 
 
@@ -141,6 +146,7 @@
         private var _rxsipHori:RxScrollInput;
 		
 		private var _sprMatrixInfo:Sprite;
+		private var _sprRectInfo:Sprite;
 
 		
 		
@@ -210,19 +216,30 @@
 			
 			
 			var ttf:TextField;
-			var tmatr:Matrix = _rxvt.GetMatrix();			
+			
+			var tmtr:Matrix = _rxvt.GetMatrix();			
 			ttf = _sprMatrixInfo['txbma'];
-			ttf.text = RxGeom.DoubleRound(tmatr.a).toString();
+			ttf.text = RxGeom.DoubleRound(tmtr.a).toString();
 			ttf = _sprMatrixInfo['txbmb'];
-			ttf.text = RxGeom.DoubleRound(tmatr.b).toString();
+			ttf.text = RxGeom.DoubleRound(tmtr.b).toString();
 			ttf = _sprMatrixInfo['txbmc'];
-			ttf.text = RxGeom.DoubleRound(tmatr.c).toString();
+			ttf.text = RxGeom.DoubleRound(tmtr.c).toString();
 			ttf = _sprMatrixInfo['txbmd'];
-			ttf.text = RxGeom.DoubleRound(tmatr.d).toString();
+			ttf.text = RxGeom.DoubleRound(tmtr.d).toString();
 			ttf = _sprMatrixInfo['txbmx'];
-			ttf.text = RxGeom.DoubleRound(tmatr.tx).toString();
+			ttf.text = RxGeom.DoubleRound(tmtr.tx).toString();
 			ttf = _sprMatrixInfo['txbmy'];
-			ttf.text = RxGeom.DoubleRound(tmatr.ty).toString();
+			ttf.text = RxGeom.DoubleRound(tmtr.ty).toString();
+			
+			var trct:Rectangle = _rxvt.GetRect();
+			ttf = _sprRectInfo['txbra'];
+			ttf.text = RxGeom.DoubleRound(trct.left).toString();
+			ttf = _sprRectInfo['txbrb'];
+			ttf.text = RxGeom.DoubleRound(trct.top).toString();
+			ttf = _sprRectInfo['txbrc'];
+			ttf.text = RxGeom.DoubleRound(trct.width).toString();
+			ttf = _sprRectInfo['txbrd'];
+			ttf.text = RxGeom.DoubleRound(trct.height).toString();
 		}		
 
 
@@ -293,6 +310,7 @@
         {
 			var tcx:Number = RxGeom.GetLeftCenter(_rctArea);
 			var tcy:Number = RxGeom.GetTopCenter(_rctArea);
+			
             var tsa:Number = _rxsipScale.GetValue();
             if (_rxvt.SetScaleAt(tcx, tcy, tsa, tsa))
             {
@@ -310,6 +328,7 @@
         {
 			var tcx:Number = RxGeom.GetLeftCenter(_rctArea);
 			var tcy:Number = RxGeom.GetTopCenter(_rctArea);
+			
             var tag:Number = _rxsipRotate.GetValue();
             var trd:Number = RxGeom.GetAngleToRadian(tag);
             if (_rxvt.SetRotateAt(tcx, tcy, trd))
