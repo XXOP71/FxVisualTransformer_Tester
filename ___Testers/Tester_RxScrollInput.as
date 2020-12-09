@@ -1,4 +1,5 @@
-﻿import flash.display.Sprite;
+﻿import flash.display.Graphics;
+import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -7,6 +8,7 @@ import flash.geom.Rectangle;
 import RxGraphicsLibrary.Controls.RxScrollbar;
 import RxGraphicsLibrary.Controls.RxScrollInput;
 import RxGraphicsLibrary.Controls.RxVisualTransformer;
+
 
 
 
@@ -43,7 +45,7 @@ function pf_rxsipVert__cbf():void
 	
 		_rxvt.MoveTop(tiy);
 		_rxvt.ApplyMatrix();
-		//_rxvt.DrawBorders(_grp);
+		_rxvt.DrawBorders(_grp);
 	}
 }
 
@@ -60,7 +62,7 @@ function pf_rxsipHori__cbf():void
 	
 		_rxvt.MoveLeft(tix);
 		_rxvt.ApplyMatrix();
-		//_rxvt.DrawBorders(_grp);
+		_rxvt.DrawBorders(_grp);
 	}
 }
 
@@ -93,6 +95,13 @@ function pf_InitOnce():void
 	_sprImg = _owrt['mvcImage'];
 	_sprImg.mouseChildren = false;
 	_sprImg.mouseEnabled = false;
+	
+	
+	_sprGrpCont = _owrt['mvcGrpCont'];
+	_sprGrpCont.mouseChildren = false;
+	_sprGrpCont.mouseEnabled = false;
+	_grp = _sprGrpCont.graphics;
+	
 	
 	
 	
@@ -143,6 +152,9 @@ var _stg:Stage;
 var _sprArea:Sprite;
 var _sprMask:Sprite;
 var _sprImg:Sprite;
+
+var _sprGrpCont:Sprite;
+var _grp:Graphics;
 
 
 var _rxvt:RxVisualTransformer;
