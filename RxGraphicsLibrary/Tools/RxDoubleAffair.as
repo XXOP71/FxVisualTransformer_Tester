@@ -2,59 +2,68 @@
 {
     public class RxDoubleAffair
     {
-        public function RxDoubleAffair(
-                            minval:Number = 0.0, maxval:Number = 1.0, val:Number = 0.0,
-                            tvga:Vector.<Number> = null, tfd:uint = 1)
+        public function RxDoubleAffair()
         {
-            if (minval >= maxval)
-                throw new Error('maxval must be greater than minval.');
-
-            _minval = minval;
-            _maxval = maxval;
-            _val = val;
-            if (_val < _minval)
-                _val = _minval;
-            else if (_val > _maxval)
-                _val = _maxval;
-
-            if (tvga == null)
-                _vga = new <Number>[0.1, 10.0, 0.01, 1.0];
-            else
-                _vga = tvga;
+			_vga = new <Number>[0.1, 10.0, 0.01, 1.0];
             _vga.fixed = true;
-            _fd = tfd;
+            _fd = 1;			
+			
+            _min = 0.0;
+            _max = 1.0;
+            _val = _min;
+			_vr = 0;
         }
-
-        private var _minval:Number;
-        private var _maxval:Number;
-        private var _val:Number;
-
         private var _vga:Vector.<Number>;
         private var _fd:uint;
+		
+
+        public function GetValueGapArr():Vector.<Number>
+        {
+			return _vga;
+        }
+        public function SetValueGapArr(tvga:Vector.<Number>):void
+        {
+			_vga = tvga;
+			_vga.fixed = true;
+        }
 
 
+        public function GetFixedNum():uint
+        {
+			return _fd;
+        }
+        public function SetFixedNum(tfd:uint):void
+        {
+			_fd = tfd;
+        }
+		
+		
+		
+		
+
+        private var _min:Number;
+        private var _max:Number;
+        private var _val:Number;
+		private var _vr:Number;//ValueRatio
+
+		
 
         public function ValueUpDown(tt:String = 'u', ti:uint = 0):void
         {
-            if ((tt == 'u') || (tt == 'd'))
+            if ((tt === 'u') || (tt === 'd'))
             {
-                if (_vga == null) return;
+                if (_vga === null) return;
                 if ((_vga.length > 0) && (ti < _vga.length))
                 {
                     var ta:Number = _vga[ti];
                     var tv:Number = _val;
 
-                    if (tt == 'u')
+                    if (tt === 'u')
                         tv = _val + ta;
-                    else if (tt == 'd')
+                    else if (tt === 'd')
                         tv = _val - ta;
-
-                    if (tv < _minval)
-                        tv = _minval;
-                    else if (tv > _maxval)
-                        tv = _maxval;
-
-                    _val = tv;
+						
+					pf_AssignValue(tv);
                 }
             }
         }
@@ -63,75 +72,122 @@
 
         public function GetMinValue():Number
         {
-            return _minval;
+            return _min;
         }
         public function SetMinValue(tv:Number):void
         {
-			_minval = tv;
+			_min = tv;
 
-            if (_minval > _maxval)
-                _minval = _maxval;
+            if (_max < _min)
+                _max = _min;
 
-            if (_val < _minval)
-                _val = _minval;
+            if (_val < _min)
+				pf_AssignValue(_min);
         }
+
 
 
         public function GetMaxValue():Number
         {
-            return _maxval;
+            return _max;
         }
         public function SetMaxValue(tv:Number):void
         {
-			_maxval = tv;
+			_max = tv;
 
-            if (_maxval < _minval)
-                _maxval = _minval;
+            if (_min > _max)
+                _min = _max;
 
-            if (_val > _maxval)
-                _val = _maxval;
+            if (_val > _max)
+				pf_AssignValue(_max);
         }
 
 
+
+		private function pf_AssignValue(tv:Number, tb:Boolean = true):void
+		{
+			_val = tv;
+
+            if (_val < _min)
+                _val = _min;
+            else if (_val > _max)
+				_val = _max;
+			
+			if (tb)
+			{
+				var tsv:Number = _max - _min;
+				if (tsv <= 0)
+					_vr = 0;
+				else
+					_vr = (_val - _min) / tsv;
+			}
+		}
         public function GetValue():Number
         {
             return _val;
         }
         public function SetValue(tv:Number):void
         {
-            if (tv < _minval)
-                tv = _minval;
-            else if (tv > _maxval)
-                tv = _maxval;
-
-            _val = tv;
+			pf_AssignValue(tv);
         }
+
 
 
         public function GetValueFixed():String
         {
             return _val.toFixed(_fd);
         }
+		
+		
+		
+		private function pf_AssignRatio(tr:Number):void
+		{
+			_vr = tr;
+			
+            if (_vr < 0)
+				_vr = 0;
+            else if (_vr > 1)
+				_vr = 1;
 
-
+            var tsv:Number = _max - _min;
+			if (tsv <= 0)
+				pf_AssignValue(_min, false);
+			else
+				pf_AssignValue(_min + (tsv * _vr), false);
+		}		
         public function GetRatio():Number
         {
-            var tsv:Number = _maxval - _minval;
-            if (tsv <= 0) return 0;
-
-            var tr:Number = (_val - _minval) / tsv;
-            return tr;
+			return _vr;
         }
-
         public function SetRatio(tr:Number):void
-        {
-            if (tr < 0) tr = 0;
-            else if (tr > 1) tr = 1;
-
-            var tsv:Number = _maxval - _minval;
-            if (tsv < 0) tsv = 0;
-            _val = _minval + (tsv * tr);
+        {			
+			pf_AssignRatio(tr);
         }
+
+
+
+        public function Reset():void
+        {
+            _min = 0.0;
+            _max = 1.0;
+            _val = _min;
+			_vr = 0;			
+        }
+		
+		
+		
+		
+		
+		public function ToString():String
+		{
+			return 'MinValue: ' + GetMinValue() + '\n' +
+				'MaxValue: ' + GetMaxValue() + '\n' +
+				'Value: ' + GetValue() + '\n' +
+				'ValueGapArr: ' + GetValueGapArr() + '\n' +
+				'FixedNum: ' + GetFixedNum() + '\n' +
+				'ValueFixed: ' + GetValueFixed() + '\n' +
+				'Ratio: ' + GetRatio();
+		}
 
     }
 }

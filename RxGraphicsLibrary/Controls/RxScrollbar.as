@@ -36,12 +36,12 @@
 
             _owner = tow;
             _grp = _owner.graphics;
-            _stage = _owner.stage;
+            _stg = _owner.stage;
 
             _rctTrack = _owner.getBounds(_owner.parent);
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
                 _rctTrack.height = tsz;
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
                 _rctTrack.width = tsz;
             _rctTrack.x = 0;
             _rctTrack.y = 0;
@@ -59,7 +59,7 @@
             _enabled = _owner.mouseEnabled;
 
 
-            _fcbf = tcbf;
+            _cbf = tcbf;
 
 
             pf_UpdateRects();
@@ -68,10 +68,16 @@
             _owner.addEventListener(MouseEvent.MOUSE_DOWN, pf_MouseDown);
         }
         private var _type:String;
-        private var _owner:Sprite;
-        private var _fcbf:Function;
+		public function GetType():String
+		{
+			return _type;
+		}
+		
+        private var _owner:Sprite;		
+        private var _cbf:Function;
+		
         private var _grp:Graphics;
-        private var _stage:Stage;
+        private var _stg:Stage;
 
         private var _rctTrack:Rectangle;
         private var _rctScrollArea:Rectangle;
@@ -94,7 +100,7 @@
             ty = _rctTrack.y,
             tw = _rctTrack.width,
             th = _rctTrack.height;
-            _grp.beginFill(0xff6600, 1);
+            _grp.beginFill(0x663300, 1);
             _grp.drawRect(tx, ty, tw, th);
             _grp.endFill();
 
@@ -129,42 +135,48 @@
 
             /*
             _grp.lineStyle(10, 0xff0000);
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
             {
                 _grp.moveTo(tx, ty + (th / 2));
                 _grp.lineTo(tx + tw, ty + (th / 2));
             }
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
             {
                 _grp.moveTo(tx + (tw / 2), ty);
                 _grp.lineTo(tx + (tw / 2), ty + th);
             }*/
 
-
+			/*
             const tkxw:Number = 8;
             var tkx:Number, tky:Number, tkw:Number, tkh:Number;
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
             {
                 _grp.beginFill(0xff0000, 0.25);
-                tkx = tx, tky = ty + ((th / 2) - tkxw),
-                tkw = tw, tkh = tkxw * 2;
+				
+                tkx = tx,
+				tky = ty + ((th / 2) - tkxw),
+                tkw = tw,
+				tkh = tkxw * 2;
                 _grp.drawRect(tkx, tky, tkw, tkh);
                 _grp.endFill();
             }
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
             {
                 _grp.beginFill(0xff0000, 0.25);
-                tkx = tx + ((tw / 2) - tkxw), tky = ty,
-                tkw = tkxw * 2, tkh = th;
+				
+                tkx = tx + ((tw / 2) - tkxw),
+				tky = ty,
+                tkw = tkxw * 2,
+				tkh = th;
                 _grp.drawRect(tkx, tky, tkw, tkh);
                 _grp.endFill();
-            }
+            }*/
 
         }
 
         private function pf_UpdateRects():void
         {
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
             {
                 var tth:Number = _rctTrack.height - _amga;
                 if (tth < _amga) tth = _amga;
@@ -179,7 +191,7 @@
 
                 pf_DrawRects();
             }
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
             {
                 var ttw:Number = _rctTrack.width - _amga;
                 if (ttw < _amga) ttw = _amga;
@@ -198,13 +210,13 @@
 
         private function pf_UpdatePosition():void
         {
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
             {
                 _rctThumb.y = _rctScrollArea.height * _positionRatio;
                 //trace('_rctThumb:', _rctThumb);
                 pf_DrawRects();
             }
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
             {
                 _rctThumb.x = _rctScrollArea.width * _positionRatio;
                 //trace('_rctThumb:', _rctThumb);
@@ -224,12 +236,12 @@
             var tv:Number;
             var tf:Number;
 
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
             {
                 tv = _owner.mouseY - _rctScrollArea.y;
                 tf = _rctScrollArea.height;
             }
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
             {
                 tv = _owner.mouseX - _rctScrollArea.x;
                 tf = _rctScrollArea.width;
@@ -240,7 +252,7 @@
             else if (tv > tf)
                 tv = tf;
 
-            if (tf == 0)
+            if (tf === 0)
                 _positionRatio = 0;
             else
                 _positionRatio = tv / tf;
@@ -248,89 +260,91 @@
             pf_UpdatePosition();
 
 
-            if (_fcbf != null)
-                _fcbf();
+            if (_cbf !== null)
+                _cbf();
 
-            if (te != null)
+            if (te !== null)
                 te.updateAfterEvent();
         }
 
         private function pf_MouseUp(te:MouseEvent):void
         {
-            _stage.removeEventListener(MouseEvent.MOUSE_UP, pf_MouseUp);
-            _stage.removeEventListener(Event.DEACTIVATE, pf_Deactivate);
-            _stage.removeEventListener(MouseEvent.MOUSE_MOVE, pf_MouseMove);
+            _stg.removeEventListener(MouseEvent.MOUSE_UP, pf_MouseUp);
+            _stg.removeEventListener(Event.DEACTIVATE, pf_Deactivate);
+            _stg.removeEventListener(MouseEvent.MOUSE_MOVE, pf_MouseMove);
         }
 
         private function pf_MouseDown(te:MouseEvent):void
         {
-            _stage.addEventListener(MouseEvent.MOUSE_UP, pf_MouseUp);
-            _stage.addEventListener(Event.DEACTIVATE, pf_Deactivate);
-            _stage.addEventListener(MouseEvent.MOUSE_MOVE, pf_MouseMove);
+            _stg.addEventListener(MouseEvent.MOUSE_UP, pf_MouseUp);
+            _stg.addEventListener(Event.DEACTIVATE, pf_Deactivate);
+            _stg.addEventListener(MouseEvent.MOUSE_MOVE, pf_MouseMove);
             pf_MouseMove(null);
         }
 
 
         public function GetSize():Number
         {
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
                 return _rctTrack.height;
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
                 return _rctTrack.width;
             return NaN;
         }
         public function SetSize(tv:Number):void
         {
-            if (_type == TYPE_VERTICAL)
+            if (_type === TYPE_VERTICAL)
             {
                 if (tv < _minsz)
                     tv = _minsz;
                 else if (tv > _maxsz)
                     tv = _maxsz;
 
-                if (tv == _rctTrack.height) return;
+                if (tv === _rctTrack.height) return;
                 _rctTrack.height = tv;
                 pf_UpdateRects();
             }
-            else if (_type == TYPE_HORIZONTAL)
+            else if (_type === TYPE_HORIZONTAL)
             {
                 if (tv < _minsz)
                     tv = _minsz;
                 else if (tv > _maxsz)
                     tv = _maxsz;
 
-                if (tv == _rctTrack.width) return;
+                if (tv === _rctTrack.width) return;
                 _rctTrack.width = tv;
                 pf_UpdateRects();
             }
         }
 
+
         public function GetScrollSizeRatio():Number
         {
             return _scrollSizeRatio;
         }
-        public function SetScrollSizeRatio(tr:Number):void
+        public function SetScrollSizeRatio(tssr:Number):void
         {
-            if (tr < 0) tr = 0;
-            else if (tr > 1) tr = 1;
+            if (tssr < 0) tssr = 0;
+            else if (tssr > 1) tssr = 1;
 
-            if (tr == _scrollSizeRatio) return;
-            _scrollSizeRatio = tr;
+            if (tssr === _scrollSizeRatio) return;
+            _scrollSizeRatio = tssr;
             pf_UpdateRects();
             pf_EnabledCheck();
         }
+		
 
         public function GetPositionRatio():Number
         {
             return _positionRatio;
         }
-        public function SetPositionRatio(tr:Number):void
+        public function SetPositionRatio(tpr:Number):void
         {
-            if (tr < 0) tr = 0;
-            else if (tr > 1) tr = 1;
+            if (tpr < 0) tpr = 0;
+            else if (tpr > 1) tpr = 1;
 
-            if (tr == _positionRatio) return;
-            _positionRatio = tr;
+            if (tpr === _positionRatio) return;
+            _positionRatio = tpr;
             pf_UpdatePosition();
         }
 
@@ -348,7 +362,7 @@
         }
         public function SetEnabled(tb:Boolean):void
         {
-            if (_enabled == tb) return;
+            if (_enabled === tb) return;
             _enabled = tb;
             if (_enabled)
             {

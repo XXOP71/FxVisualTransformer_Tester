@@ -19,29 +19,28 @@
 
     public final class RxScrollInput
     {
+		//~~~~~~~~~~
         public function RxScrollInput(cont:Sprite, ttp:String,
-                            rxsbnm:String ='mvc_rxsb', txbnm:String = 'txb',
                             tsz:Number = 400, tssr:Number = 1.0, tpr:Number = 0.0,
-                            minval:Number = 0.0, maxval:Number = 1.0, val:Number = 0.0,
-                            tvga:Vector.<Number> = null, tfd:uint = 1,
                             tcbf:Function = null)
         {
             _cont = cont;
             _cont.tabEnabled = false;
 
 
-            var spr_rxsb:Sprite = _cont[rxsbnm];
+            var spr_rxsb:Sprite = _cont['mvc_rxsb'];
             _rxsb = new RxScrollbar(ttp, spr_rxsb, tsz, tssr, tpr, pf_rxsb__cbf);
 
-            _txb = _cont[txbnm];
+			_spr_ipg = _cont['mvcInputGroup'];
+            _txb = _spr_ipg['txb'];
             _txb.addEventListener(KeyboardEvent.KEY_DOWN, pf_keyduan);
             _txb.addEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
 
 
-            _rxdbaff = new RxDoubleAffair(minval, maxval, val, tvga, tfd);
+            _rxdbaff = new RxDoubleAffair();
             _txb.text = _rxdbaff.GetValueFixed();
 
-            pf_val_upt(false);
+            pf_valupt(false);
 
 
             _cbf = tcbf;
@@ -52,25 +51,40 @@
             return _cont;
         }
 
+
         private var _rxsb:RxScrollbar;
         public function GetScrollbar():RxScrollbar
         {
             return _rxsb;
         }
 
+
+		private var _spr_ipg:Sprite;
         private var _txb:TextField;
         public function GetTextBox():TextField
         {
             return _txb;
         }
+		
+
 
         private var _rxdbaff:RxDoubleAffair;
         public function GetDoubleAffair():RxDoubleAffair
         {
             return _rxdbaff;
         }
-		
 
+
+        private var _cbf:Function;
+        public function GetCallback():Function
+        {
+            return _cbf;
+        }
+		//~~~~~~~~~~
+		
+		
+		
+		//~~~~~~~~~~
         public function GetContX():Number
         {
             return _cont.x;
@@ -79,6 +93,7 @@
         {
             _cont.x = tv;
         }
+		
 		
         public function GetContY():Number
         {
@@ -89,7 +104,20 @@
             _cont.y = tv;
         }
 		
-
+		
+        public function SetTbX(tv:Number):void
+        {
+            _spr_ipg.x = tv;
+        }
+        public function SetTbY(tv:Number):void
+        {
+            _spr_ipg.y = tv;
+        }
+		//~~~~~~~~~~
+		
+		
+		
+		//~~~~~~~~~~
         public function GetScrollbarSize():Number
         {
             return _rxsb.GetSize();
@@ -108,18 +136,52 @@
         {
             _rxsb.SetScrollSizeRatio(tr);
         }
+		//~~~~~~~~~~
 		
 		
-        public function GetScrollRatio():Number
+		
+		//~~~~~~~~~~
+        public function GetValueGapArr():Vector.<Number>
         {
-            return _rxsb.GetPositionRatio();
+			return _rxdbaff.GetValueGapArr();
         }
-        public function SetScrollRatio(tr:Number):void
+        public function SetValueGapArr(tvga:Vector.<Number>):void
         {
-            return _rxsb.SetPositionRatio(tr);
+			_rxdbaff.SetValueGapArr(tvga);
+        }
+		
+		
+        public function GetFixedNum():uint
+        {
+			return _rxdbaff.GetFixedNum();
+        }
+        public function SetFixedNum(tfd:uint):void
+        {
+			_rxdbaff.SetFixedNum(tfd);
         }
 		
 
+		
+        public function GetMinValue():Number
+        {
+            return _rxdbaff.GetMinValue();
+        }
+        public function SetMinValue(tv:Number):void
+        {
+			_rxdbaff.SetMinValue(tv);
+        }
+		
+		
+        public function GetMaxValue():Number
+        {
+            return _rxdbaff.GetMaxValue();
+        }
+        public function SetMaxValue(tv:Number):void
+        {
+			_rxdbaff.SetMaxValue(tv);
+        }
+		
+		
         public function GetValue():Number
         {
             return _rxdbaff.GetValue();
@@ -133,29 +195,52 @@
 
             _txb.text = _rxdbaff.GetValueFixed();
         }
-
-
-        private var _cbf:Function;
-
-
-        public function SetTextBoxPos(tx:Number, ty:Number):void
+		
+		
+        public function GetRatio():Number
         {
-            try
-            {
-                var tdo:DisplayObject;
-
-                tdo = _cont.getChildAt(0);
-                if (!isNaN(tx)) tdo.x = tx;
-                if (!isNaN(ty)) tdo.y = ty;
-
-                tdo = _cont.getChildAt(1);
-                if (!isNaN(tx)) tdo.x = 1 + tx;
-                if (!isNaN(ty)) tdo.y = ty;
-            }
-            catch (e:Error) { }
+            return _rxdbaff.GetRatio();
         }
+        public function SetRatio(tr:Number):void
+        {
+			_rxdbaff.SetRatio(tr);
+			_rxsb.SetPositionRatio(tr);
+        }
+		//~~~~~~~~~~
+		
+		
+		
+		//~~~~~~~~~~
+        public function SetCalcValues(tmv:Number, tiv:Number):void
+        {
+			if (tmv < tiv)
+			{
+				var tdh:Number = tiv - tmv;				
+				SetMinValue(0.0);
+				SetMaxValue(tdh);
+				
+				var tssr:Number = tmv / tiv;
+				SetScrollSizeRatio(tssr);
+			}
+			else
+			{
+				_rxdbaff.Reset();
+			}
+        }
+		
+		
+		
+		public function ToString():String
+		{
+			return _rxdbaff.ToString();
+		}
+		//~~~~~~~~~~
 
 
+
+
+		
+		//~~~~~~~~~~
         private function pf_rxsb__cbf():void
         {
             var tpr:Number = _rxsb.GetPositionRatio();
@@ -163,18 +248,19 @@
 
             _txb.text = _rxdbaff.GetValueFixed();
 
-            if (_cbf != null)
+            if (_cbf !== null)
                 _cbf();
         }
 
-        private function pf_val_upt(tb:Boolean):void
+        private function pf_valupt(tb:Boolean):void
         {
             var tpr:Number = _rxdbaff.GetRatio();
             _rxsb.SetPositionRatio(tpr);
+			trace(1004, tpr);
 
             _txb.text = _rxdbaff.GetValueFixed();
 
-            if (tb && (_cbf != null))
+            if (tb && (_cbf !== null))
                 _cbf();
         }
 		
@@ -189,16 +275,16 @@
                 ti = 3;
 				
 			_rxdbaff.ValueUpDown(tt, ti);
-			pf_val_upt(tb);
+			pf_valupt(tb);			
 		}
 
         private function pf_keyduan(te:KeyboardEvent):void
         {
-            if (te.keyCode == Keyboard.UP)
+            if (te.keyCode === Keyboard.UP)
             {
 				pf_comupt(te, 'u', true);
             }
-            else if (te.keyCode == Keyboard.DOWN)
+            else if (te.keyCode === Keyboard.DOWN)
             {
 				pf_comupt(te, 'd', true);
             }
@@ -228,6 +314,7 @@
 				pf_comupt(te, 'd', tb);
             }
         }
+		//~~~~~~~~~~
 		
     }
 }

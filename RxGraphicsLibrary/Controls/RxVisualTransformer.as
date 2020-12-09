@@ -106,14 +106,14 @@
 
         private function pf_MakeRect():void
         {
-            _rct = RxGeom.GetBounds(_drct, _mtr, 100, 100);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 50, 50);
         }
 
-        private var _cnt:uint = 0;
+        //private var _cnt:uint = 0;
         public function ApplyMatrix():void
         {
             _tdo.transform.matrix = _mtr;
-            trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
+            //trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
         }
 
 
@@ -290,10 +290,10 @@
 
 
 
-		public var bDraw:Boolean = false; 
+		private var _bDraw:Boolean = true; 
         public function DrawBorders(tgrp:Graphics):void
         {
-			if (bDraw)
+			if (_bDraw)
 			{
 				tgrp.clear();
 				tgrp.lineStyle(5, 0xff0000, 0.35);
