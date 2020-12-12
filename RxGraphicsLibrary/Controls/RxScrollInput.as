@@ -325,6 +325,17 @@
         }
 		
 		
+//        public function GetScrollSizeRatio():Number
+//        {
+//			return _rxsb.GetScrollSizeRatio();
+//        }
+//		
+//        public function SetScrollSizeRatio(tssr:Number):void
+//        {
+//			_rxsb.SetScrollSizeRatio(tssr);
+//        }
+		
+		
 		
 		public function ToString():String
 		{
