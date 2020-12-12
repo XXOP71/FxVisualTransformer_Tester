@@ -10,11 +10,22 @@
 
     public final class RxGeom
     {
-        public static function DoubleRound(tv:Number):Number
+        public static function DoubleRound(tv:Number, tq:Number = 1000):Number
         {
-            const txx:Number = 1000;
-            return Math.round(tv * txx) / txx;
+			if (tq > 0)
+            	return Math.round(tv * tq) / tq;
+			else 
+            	return Math.round(tv);
         }
+		
+        public static function RectRound(trct:Rectangle):void
+        {
+			const tq:Number = 1000;
+            trct.width = DoubleRound(trct.width, tq);
+			trct.height = DoubleRound(trct.height, tq);
+			trct.x = DoubleRound(trct.y, tq);
+			trct.y = DoubleRound(trct.y, tq);
+        }		
 
         public static function MatrixInfo(tmtr:Matrix):void
         {
@@ -66,6 +77,8 @@
             trct.height = teh;
 
             trct.inflate(tdx, tdy);
+			//RectRound(trct);
+			//trace('~~~~', trct);
 
 
             return trct;

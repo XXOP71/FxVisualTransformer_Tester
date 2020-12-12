@@ -8,10 +8,7 @@
             _vga.fixed = true;
             _fd = 1;			
 			
-            _min = 0.0;
-            _max = 1.0;
-            _val = _min;
-			_vr = 0;
+            Reset();
         }
         private var _vga:Vector.<Number>;
         private var _fd:uint;
@@ -81,8 +78,7 @@
             if (_max < _min)
                 _max = _min;
 
-            if (_val < _min)
-				pf_AssignValue(_min);
+            pf_CheckValue(true);
         }
 
 
@@ -98,21 +94,18 @@
             if (_min > _max)
                 _min = _max;
 
-            if (_val > _max)
-				pf_AssignValue(_max);
+            pf_CheckValue(true);
         }
 
 
-
-		private function pf_AssignValue(tv:Number, tb:Boolean = true):void
+		
+		private function pf_CheckValue(tb:Boolean):void
 		{
-			_val = tv;
-
             if (_val < _min)
                 _val = _min;
             else if (_val > _max)
 				_val = _max;
-			
+				
 			if (tb)
 			{
 				var tsv:Number = _max - _min;
@@ -121,6 +114,11 @@
 				else
 					_vr = (_val - _min) / tsv;
 			}
+		}
+		private function pf_AssignValue(tv:Number, tb:Boolean = true):void
+		{
+			_val = tv;
+            pf_CheckValue(tb);
 		}
         public function GetValue():Number
         {
@@ -171,7 +169,7 @@
             _min = 0.0;
             _max = 1.0;
             _val = _min;
-			_vr = 0;			
+			_vr = 0;
         }
 		
 		

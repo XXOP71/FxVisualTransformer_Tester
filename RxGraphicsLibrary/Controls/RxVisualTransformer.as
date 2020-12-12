@@ -106,13 +106,18 @@
 
         private function pf_MakeRect():void
         {
-            _rct = RxGeom.GetBounds(_drct, _mtr, 50, 50);
+            _rct = RxGeom.GetBounds(_drct, _mtr, 30, 30);
         }
 
-        //private var _cnt:uint = 0;
+        private var _cnt:uint = 0;
+		public function GetCount():uint
+		{
+			return _cnt;
+		}
         public function ApplyMatrix():void
         {
             _tdo.transform.matrix = _mtr;
+			_cnt++;
             //trace('한번 호출에 몇번이 실행되는거야? ' + (_cnt++));
         }
 
@@ -210,8 +215,6 @@
 
             if ((tysx !== tnsx) && (tysy !== tnsy))
             {
-//                var tcx:Number = RxGeom.GetLeftCenter(_rct);
-//                var tcy:Number = RxGeom.GetTopCenter(_rct);
                 //trace(tcx, tcy);
                 _mtr.translate(-tcx, -tcy);
 
@@ -290,15 +293,15 @@
 
 
 
-		private var _bDraw:Boolean = true; 
+		private var _bDraw:Boolean = false; 
         public function DrawBorders(tgrp:Graphics):void
         {
 			if (_bDraw)
 			{
 				tgrp.clear();
-				tgrp.lineStyle(5, 0xff0000, 0.35);
+				tgrp.lineStyle(5, 0xff0000, 0.75);
 				tgrp.beginFill(0x00ff00, 0.15);
-				tgrp.drawRect(_rct.x, _rct.y, _rct.width, _rct.height);
+				tgrp.drawRect(_rct.x, _rct.y, _rct.width, _rct.height);				
 				tgrp.moveTo(_rct.left, _rct.top);
 				tgrp.lineTo(_rct.right, _rct.bottom);
 				tgrp.moveTo(_rct.left, _rct.bottom);

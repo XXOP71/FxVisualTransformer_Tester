@@ -19,7 +19,8 @@
 
     public final class RxScrollInput
     {
-		//~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public function RxScrollInput(cont:Sprite, ttp:String,
                             tsz:Number = 400, tssr:Number = 1.0, tpr:Number = 0.0,
                             tcbf:Function = null)
@@ -80,11 +81,14 @@
         {
             return _cbf;
         }
-		//~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		
 		
-		//~~~~~~~~~~
+		
+		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public function GetContX():Number
         {
             return _cont.x;
@@ -113,134 +117,14 @@
         {
             _spr_ipg.y = tv;
         }
-		//~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		
 		
-		//~~~~~~~~~~
-        public function GetScrollbarSize():Number
-        {
-            return _rxsb.GetSize();
-        }
-        public function SetScrollbarSize(tv:Number):void
-        {
-            _rxsb.SetSize(tv);
-        }
 		
 		
-        public function GetScrollSizeRatio():Number
-        {
-            return _rxsb.GetScrollSizeRatio();
-        }
-        public function SetScrollSizeRatio(tr:Number):void
-        {
-            _rxsb.SetScrollSizeRatio(tr);
-        }
-		//~~~~~~~~~~
-		
-		
-		
-		//~~~~~~~~~~
-        public function GetValueGapArr():Vector.<Number>
-        {
-			return _rxdbaff.GetValueGapArr();
-        }
-        public function SetValueGapArr(tvga:Vector.<Number>):void
-        {
-			_rxdbaff.SetValueGapArr(tvga);
-        }
-		
-		
-        public function GetFixedNum():uint
-        {
-			return _rxdbaff.GetFixedNum();
-        }
-        public function SetFixedNum(tfd:uint):void
-        {
-			_rxdbaff.SetFixedNum(tfd);
-        }
-		
-
-		
-        public function GetMinValue():Number
-        {
-            return _rxdbaff.GetMinValue();
-        }
-        public function SetMinValue(tv:Number):void
-        {
-			_rxdbaff.SetMinValue(tv);
-        }
-		
-		
-        public function GetMaxValue():Number
-        {
-            return _rxdbaff.GetMaxValue();
-        }
-        public function SetMaxValue(tv:Number):void
-        {
-			_rxdbaff.SetMaxValue(tv);
-        }
-		
-		
-        public function GetValue():Number
-        {
-            return _rxdbaff.GetValue();
-        }
-        public function SetValue(tv:Number):void
-        {
-            _rxdbaff.SetValue(tv);
-
-            var tpr:Number = _rxdbaff.GetRatio();
-            _rxsb.SetPositionRatio(tpr);
-
-            _txb.text = _rxdbaff.GetValueFixed();
-        }
-		
-		
-        public function GetRatio():Number
-        {
-            return _rxdbaff.GetRatio();
-        }
-        public function SetRatio(tr:Number):void
-        {
-			_rxdbaff.SetRatio(tr);
-			_rxsb.SetPositionRatio(tr);
-        }
-		//~~~~~~~~~~
-		
-		
-		
-		//~~~~~~~~~~
-        public function SetCalcValues(tmv:Number, tiv:Number):void
-        {
-			if (tmv < tiv)
-			{
-				var tdh:Number = tiv - tmv;				
-				SetMinValue(0.0);
-				SetMaxValue(tdh);
-				
-				var tssr:Number = tmv / tiv;
-				SetScrollSizeRatio(tssr);
-			}
-			else
-			{
-				_rxdbaff.Reset();
-			}
-        }
-		
-		
-		
-		public function ToString():String
-		{
-			return _rxdbaff.ToString();
-		}
-		//~~~~~~~~~~
-
-
-
-
-		
-		//~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         private function pf_rxsb__cbf():void
         {
             var tpr:Number = _rxsb.GetPositionRatio();
@@ -256,7 +140,6 @@
         {
             var tpr:Number = _rxdbaff.GetRatio();
             _rxsb.SetPositionRatio(tpr);
-			trace(1004, tpr);
 
             _txb.text = _rxdbaff.GetValueFixed();
 
@@ -314,7 +197,140 @@
 				pf_comupt(te, 'd', tb);
             }
         }
-		//~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+		
+		
+		
+		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public function GetScrollbarSize():Number
+        {
+            return _rxsb.GetSize();
+        }
+        public function SetScrollbarSize(tv:Number):void
+        {
+            _rxsb.SetSize(tv);
+        }
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+		
+		
+		
+		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public function GetValueGapArr():Vector.<Number>
+        {
+			return _rxdbaff.GetValueGapArr();
+        }
+        public function SetValueGapArr(tvga:Vector.<Number>):void
+        {
+			_rxdbaff.SetValueGapArr(tvga);
+        }
+		
+		
+        public function GetFixedNum():uint
+        {
+			return _rxdbaff.GetFixedNum();
+        }
+        public function SetFixedNum(tfd:uint):void
+        {
+			_rxdbaff.SetFixedNum(tfd);
+        }
+		
+
+
+		//````(중요)
+		private function pf_AfterSideUpdate():void
+		{
+            var tpr:Number = _rxdbaff.GetRatio();
+            _rxsb.SetPositionRatio(tpr);
+            _txb.text = _rxdbaff.GetValueFixed();
+		}
+		
+		
+        public function GetMinValue():Number
+        {
+            return _rxdbaff.GetMinValue();
+        }
+        public function SetMinValue(tv:Number):void
+        {
+			_rxdbaff.SetMinValue(tv);
+			pf_AfterSideUpdate();
+        }
+		
+		
+        public function GetMaxValue():Number
+        {
+            return _rxdbaff.GetMaxValue();
+        }
+        public function SetMaxValue(tv:Number):void
+        {
+			_rxdbaff.SetMaxValue(tv);
+			pf_AfterSideUpdate();
+        }
+		
+		
+        public function GetValue():Number
+        {
+            return _rxdbaff.GetValue();
+        }
+        public function SetValue(tv:Number):void
+        {
+            _rxdbaff.SetValue(tv);
+			pf_AfterSideUpdate();
+        }
+		
+		
+        public function GetRatio():Number
+        {
+            return _rxdbaff.GetRatio();
+        }
+        public function SetRatio(tr:Number):void
+        {
+			_rxdbaff.SetRatio(tr);
+			pf_AfterSideUpdate();
+        }
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+		
+		
+		
+		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public function SetCalcValues(tmv:Number, tiv:Number):void
+        {
+			if (tmv < tiv)
+			{
+				var tdh:Number = tiv - tmv;
+				_rxdbaff.SetMinValue(0.0);
+				_rxdbaff.SetMaxValue(tdh);
+
+				var tssr:Number = tmv / tiv;				
+				_rxsb.SetScrollSizeRatio(tssr);
+				pf_AfterSideUpdate();
+			}
+			else
+			{
+				_rxdbaff.SetMinValue(0);
+				_rxdbaff.SetMaxValue(0);
+				_rxsb.SetScrollSizeRatio(1);				
+				pf_AfterSideUpdate();
+			}
+			
+			//trace(tmv / tiv);
+        }
+		
+		
+		
+		public function ToString():String
+		{
+			return _rxdbaff.ToString();
+		}
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
     }
 }
