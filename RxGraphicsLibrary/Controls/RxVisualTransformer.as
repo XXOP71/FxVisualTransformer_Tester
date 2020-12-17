@@ -38,7 +38,7 @@
         }
 
         private var _rct:Rectangle;
-        public function GetRect():Rectangle
+        public function GetBounds():Rectangle
         {
             return _rct;
         }

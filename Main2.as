@@ -12,6 +12,10 @@ import RxGraphicsLibrary.Controls.RxScrollbar;
 import RxGraphicsLibrary.Controls.RxScrollInput;
 import RxGraphicsLibrary.Controls.RxVisualTransformer;
 import RxGraphicsLibrary.Tools.RxGeom;
+import flash.geom.Matrix;
+import flash.display.DisplayObject;
+import flash.geom.Point;
+import flash.display.Shape;
 
 
 
@@ -48,7 +52,7 @@ function pf_ApplyMatrix():void
 	ttf = _sprAllInfo['txbmy'];
 	ttf.text = RxGeom.DoubleRound(tmtr.ty).toString();
 	
-	var trct:Rectangle = _rxvt.GetRect();
+	var trct:Rectangle = _rxvt.GetBounds();
 	ttf = _sprAllInfo['txbra'];
 	ttf.text = RxGeom.DoubleRound(trct.left).toString();
 	ttf = _sprAllInfo['txbrb'];
@@ -60,7 +64,91 @@ function pf_ApplyMatrix():void
 	
 	
 	ttf = _sprAllInfo['txbfa'];
-	ttf.text = '::' + _rxvt.GetCount().toString();
+	ttf.text = ':: ' + _rxvt.GetCount().toString();
+	
+	
+
+
+	pf_AfterCanvasTransform();
+}
+
+function pf_GetRcpt(tcpt:Point, ttpt:Point, trd:Number):Point
+{
+	var tmtr:Matrix = new Matrix();
+	tmtr.translate(-tcpt.x, -tcpt.y);
+	tmtr.rotate(trd);
+	tmtr.translate(tcpt.x, tcpt.y);
+	//trace('tmtr:', tmtr);
+
+	var tnpt:Point = tmtr.transformPoint(ttpt);
+	//var tnpt:Point = tmtr.deltaTransformPoint(ttpt);
+	//trace(tnpt);
+	return tnpt;
+}
+function pf_AfterCanvasTransform_Children():void
+{
+	if (isNaN(_brd)) return;
+	
+	const rct_d:Rectangle = _rxvt.GetDefaultRect();	
+	for (var tl:int = _sprCanvas.numChildren, ti = 0; ti < tl; ti++)
+	{
+		var tdo:DisplayObject = _sprCanvas.getChildAt(ti);
+		if (tdo.name !== 'mvcCanvas_bg')
+		{
+			var tpt1:Point = new Point(rct_d.width / 2, rct_d.height / 2);
+			var tpt2:Point = new Point(tdo.x, tdo.y);
+			var tnpt:Point = pf_GetRcpt(tpt1, tpt2, _brd);
+			tdo.x = tnpt.x;
+			tdo.y = tnpt.y;
+			
+			try
+			{
+				var ttf:TextField = tdo['txb1'];				
+				ttf.text = '{' + new Point(tdo.x, tdo.y).toString() + '}';
+			}
+			catch (e:Error) { }
+			
+//			try
+//			{
+//				//trace(tdo);
+//				var tg:Graphics = Shape(tdo).graphics;
+//				//var txx = tg.readGraphicsData(false);
+//				trace(tg['readGraphicsData']);
+//				//trace(txx);
+//			}
+//			catch (te:Error)
+//			{
+//				trace(te);
+//			}
+		}
+	}
+	
+	_brd = NaN;
+}
+function pf_AfterCanvasTransform():void
+{
+	//이부분을 다시 연구합시다.
+	var tsa:Number = _rxsipScale.GetValue();
+	//trace('tsa:', tsa);	
+	_sprCanvas.scaleX = tsa;
+	_sprCanvas.scaleY = tsa;
+	
+	var rctImg:Rectangle = _rxvt.GetBounds();	
+	var tcx:Number = RxGeom.GetLeftCenter(rctImg);
+	var tcy:Number = RxGeom.GetTopCenter(rctImg);
+	
+	var rct_d:Rectangle = _rxvt.GetDefaultRect();
+	var ttw:Number = rct_d.width * tsa;
+	var tth:Number = rct_d.height * tsa;
+	var thw:Number = ttw / 2;
+	var thh:Number = tth / 2;
+	
+	_sprCanvas.x = tcx - thw;
+	_sprCanvas.y = tcy - thh;
+	
+	
+	
+	pf_AfterCanvasTransform_Children();
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -73,7 +161,7 @@ function pf_ApplyMatrix():void
 //::
 function pf_ImageSizeUpdate__Vert(tb:Boolean = true):void
 {
-	var rctImg:Rectangle = _rxvt.GetRect();	
+	var rctImg:Rectangle = _rxvt.GetBounds();	
 	_rxsipVert.SetCalcValues(_rctArea.height, rctImg.height);
 	
 	if (tb)
@@ -95,7 +183,7 @@ function pf_ImageSizeUpdate__Vert(tb:Boolean = true):void
 //::
 function pf_ImageSizeUpdate__Hori(tb:Boolean = true):void
 {
-	var rctImg:Rectangle = _rxvt.GetRect();	
+	var rctImg:Rectangle = _rxvt.GetBounds();	
 	_rxsipHori.SetCalcValues(_rctArea.width, rctImg.width);
 	
 	if (tb)
@@ -123,7 +211,7 @@ function pf_stage__resize(te:Event):void
 
 	if (tsw < 680) tsw = 680;
 	if (tsh < 480) tsh = 480;
-	trace(tsw, tsh);	
+	//trace(tsw, tsh);
 		
 	
 	
@@ -148,7 +236,7 @@ function pf_stage__resize(te:Event):void
 	_sprBorder.height = tth + 20;
 	
 	_sprCrossHead.x = RxGeom.GetLeftCenter(_rctArea);
-	_sprCrossHead.y = RxGeom.GetTopCenter(_rctArea);	
+	_sprCrossHead.y = RxGeom.GetTopCenter(_rctArea);
 	
 	
 	
@@ -194,7 +282,7 @@ function pf_stage__resize(te:Event):void
 //::
 function pf_rxsipVert__cbf():void
 {
-	var rctImg:Rectangle = _rxvt.GetRect();
+	var rctImg:Rectangle = _rxvt.GetBounds();
 	
 	var tsd:Number = rctImg.height - _rctArea.height;
 	if (tsd > 0)
@@ -208,7 +296,7 @@ function pf_rxsipVert__cbf():void
 //::
 function pf_rxsipHori__cbf():void
 {
-	var rctImg:Rectangle = _rxvt.GetRect();
+	var rctImg:Rectangle = _rxvt.GetBounds();
 	
 	var tsd:Number = rctImg.width - _rctArea.width;
 	if (tsd > 0)
@@ -309,6 +397,7 @@ function pf_rxsipScale__cbf():void
 	}
 }
 
+var _brd:Number;
 //::
 function pf_rxsipRotate__cbf():void
 {
@@ -317,8 +406,12 @@ function pf_rxsipRotate__cbf():void
 	
 	var tag:Number = _rxsipRotate.GetValue();
 	var trd:Number = RxGeom.GetAngleToRadian(tag);
+	//_brd = RxGeom.CheckRadian(RxGeom.GetRadian1(_rxvt.GetMatrix()));
+	_brd = RxGeom.GetRadian1(_rxvt.GetMatrix());
+	_brd = trd - _brd;
+	//trace(_brd);
 	if (_rxvt.SetRotateAt(tcx, tcy, trd))
-	{
+	{		
 		pf_BeforeMove(_rxvt.GetLeftCenter(), _rxvt.GetTopCenter());		
 		pf_ImageSizeUpdate__Vert(false);
 		pf_ImageSizeUpdate__Hori(false);
@@ -357,7 +450,7 @@ function pf_sprArea__mouseWheel(te:MouseEvent):void
 		}
 	}
 	else
-	{				
+	{
 		_rxsipScale.CallMouseWheelHandler(te, false);
 		
 		var tsa:Number = _rxsipScale.GetValue();
@@ -411,7 +504,6 @@ function pf_sprArea__mouseDown(te:MouseEvent):void
 	pf_sprArea__mouseMove(null);
 }
 
-//::
 function pf_InitOnce():void
 {
 	_stg = _owrt.stage;
@@ -425,6 +517,7 @@ function pf_InitOnce():void
 	
 	_sprArea = _owrt['mvcArea'];
 	_sprArea.mouseChildren = false;
+	_sprArea.mouseEnabled = false;
 	_sprArea.buttonMode = true;
 	
 	_sprMask = _owrt['mvcMask'];
@@ -439,7 +532,12 @@ function pf_InitOnce():void
 	_sprGrpCont = _owrt['mvcGrpCont'];
 	_sprGrpCont.mouseChildren = false;
 	_sprGrpCont.mouseEnabled = false;
-	_grp = _sprGrpCont.graphics;	
+	_grp = _sprGrpCont.graphics;
+	
+	_sprCanvas = _owrt['mvcCanvas'];
+	_sprCanvas.mouseChildren = false;
+	//_sprCanvas.mouseEnabled = false;
+	
 	
 	_sprBorder = _owrt['mvcBorder'];
 	_sprBorder.mouseChildren = false;
@@ -521,7 +619,7 @@ function pf_InitOnce():void
 	
 	
 	
-	_stg.addEventListener(Event.RESIZE, pf_stage__resize);	
+	_stg.addEventListener(Event.RESIZE, pf_stage__resize);
 	pf_stage__resize(null);
 	
 	
@@ -532,9 +630,35 @@ function pf_InitOnce():void
 	_stg.addEventListener(KeyboardEvent.KEY_DOWN,
 		function(te:KeyboardEvent):void {
 			if (te.keyCode === Keyboard.LEFT)
-			{//여기부터
+			{//여기부터~~
 			}
 		});
+		
+		
+
+
+	_stg.addEventListener(Event.ENTER_FRAME,
+		function(te:Event):void {
+			var tsa:Number = _rxsipScale.GetValue();
+			tsa += 0.01;
+			if (tsa > 2.0)
+				tsa = 1.0;
+			_rxsipScale.SetValue(tsa);
+			pf_rxsipScale__cbf();
+			
+			
+			var tag:Number = _rxsipRotate.GetValue();
+			//trace(tag);
+			tag += 1;
+			if (tag > _rxsipRotate.GetMaxValue())
+				tag = _rxsipRotate.GetMinValue();
+			//trace(tag);
+			//var trd:Number = RxGeom.GetAngleToRadian(tag);
+			//_rxsipRotate.SetValue(trd);
+			_rxsipRotate.SetValue(tag);
+			pf_rxsipRotate__cbf();
+		});
+		
 }
 
 
@@ -548,6 +672,7 @@ var _sprArea:Sprite;
 var _sprMask:Sprite;
 var _sprImg:Sprite;
 
+var _sprCanvas:Sprite;
 var _sprGrpCont:Sprite;
 var _grp:Graphics;
 

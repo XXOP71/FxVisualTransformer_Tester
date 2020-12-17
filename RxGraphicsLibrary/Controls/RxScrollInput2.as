@@ -2,6 +2,7 @@
 {
     import flash.display.DisplayObject;
     import flash.display.Graphics;
+	import flash.display.SimpleButton;
     import flash.display.Shape;
     import flash.display.Sprite;
     import flash.display.Stage;
@@ -13,40 +14,60 @@
     import flash.events.KeyboardEvent;
     import flash.ui.Keyboard;
     import RxGraphicsLibrary.Tools.RxDoubleAffair;
+    import flash.display.DisplayObjectContainer;
+    import hbx.found.CFrameTimer;
+    
 
 
 
 
-    public final class RxScrollInput
+    public final class RxScrollInput2
     {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public function RxScrollInput(cont:Sprite, ttp:String,
+        public function RxScrollInput2(cont:Sprite, ttp:String,
                             tsz:Number = 400, tssr:Number = 1.0, tpr:Number = 0.0,
                             tcbf:Function = null)
         {
             _cont = cont;
-            _cont.tabEnabled = false;
-
+            _cont.tabEnabled = false;			
+			_cont.addEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
+			_stage = _cont.stage;
+			_stage.addEventListener(KeyboardEvent.KEY_DOWN, pf_keyduan);
+			
 
             var spr_rxsb:Sprite = _cont['mvc_rxsb'];
             _rxsb = new RxScrollbar(ttp, spr_rxsb, tsz, tssr, tpr, pf_rxsb__cbf);
-
-			_spr_ipg = _cont['mvcInputGroup'];
+			
+			_spr_ipg = _cont['mvc_ipgb'];			
             _txb = _spr_ipg['txb'];
-            _txb.addEventListener(KeyboardEvent.KEY_DOWN, pf_keyduan);
-            _txb.addEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
-
-
+//            _txb.addEventListener(KeyboardEvent.KEY_DOWN, pf_keyduan);
+//            _txb.addEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
+			
             _rxdbaff = new RxDoubleAffair();
             _txb.text = _rxdbaff.GetValueFixed();
 
             pf_valupt(false);
-
-
+			
+			
             _cbf = tcbf;
+			
+			
+			
+			_btnl = _spr_ipg['btnl'];
+			_btnl.addEventListener(MouseEvent.MOUSE_DOWN, pf_btnl_md);
+			_btnl.addEventListener(MouseEvent.MOUSE_UP, pf_btnl_mu);
+			_btnl.addEventListener(MouseEvent.CLICK, pf_btnl_cl);
+			_btnr = _spr_ipg['btnr'];
+			_btnr.addEventListener(MouseEvent.MOUSE_DOWN, pf_btnr_md);
+			_btnr.addEventListener(MouseEvent.MOUSE_UP, pf_btnr_mu);
+			_btnr.addEventListener(MouseEvent.CLICK, pf_btnr_cl);
+			
+			_ftmr = new CFrameTimer(3, 0);
+			_ftmr.addEventListener(CFrameTimer.ET_UPDATE, pf_ftmr_udp);
         }
         private var _cont:Sprite;
+		private var _stage:Stage;
         public function GetCont():Sprite
         {
             return _cont;
@@ -81,6 +102,51 @@
         {
             return _cbf;
         }
+		
+		
+		
+		//{{----------
+		private var _btnl:SimpleButton;
+		private function pf_btnl_cl(te:MouseEvent):void
+		{
+			pf_comupt(te, 'd', true);
+		}
+		private function pf_btnl_mu(te:MouseEvent):void
+		{
+			_ftmr.stop();
+		}
+		private function pf_btnl_md(te:MouseEvent):void
+		{
+			_rut = 'd';
+			_ri = 0;
+			_ftmr.start();
+		}
+		
+		private var _btnr:SimpleButton;
+		private function pf_btnr_cl(te:MouseEvent):void
+		{
+			pf_comupt(te, 'u', true);
+		}
+		private function pf_btnr_mu(te:MouseEvent):void
+		{
+			_ftmr.stop();
+		}
+		private function pf_btnr_md(te:MouseEvent):void
+		{
+			_rut = 'u';
+			_ri = 0;
+			_ftmr.start();
+		}
+		
+		private var _rut:String;
+		private var _ri:uint;
+		private var _ftmr:CFrameTimer;
+		private function pf_ftmr_udp(te:Event):void
+		{
+			_rxdbaff.ValueUpDown(_rut, _ri);
+			pf_valupt(true);
+		}
+		//}}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		
@@ -158,19 +224,31 @@
                 ti = 3;
 				
 			_rxdbaff.ValueUpDown(tt, ti);
-			pf_valupt(tb);			
+			pf_valupt(tb);
 		}
 
+		private function pf_IsOver():Boolean
+		{
+			var tdoc:DisplayObjectContainer = _cont.parent;
+			var trct:Rectangle = _cont.getBounds(tdoc);
+			//trace(trct);
+			var tmx:Number = tdoc.mouseX;
+			var tmy:Number = tdoc.mouseY;
+			return trct.contains(tmx, tmy);
+		}
         private function pf_keyduan(te:KeyboardEvent):void
         {
-            if (te.keyCode === Keyboard.UP)
-            {
-				pf_comupt(te, 'u', true);
-            }
-            else if (te.keyCode === Keyboard.DOWN)
-            {
-				pf_comupt(te, 'd', true);
-            }
+			if (pf_IsOver())
+			{
+				if (te.keyCode === Keyboard.UP)
+				{
+					pf_comupt(te, 'u', true);
+				}
+				else if (te.keyCode === Keyboard.DOWN)
+				{
+					pf_comupt(te, 'd', true);
+				}
+			}
         }
 
         private function pf_mswh(te:MouseEvent):void

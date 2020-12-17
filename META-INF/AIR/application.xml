@@ -14,7 +14,7 @@
   <copyright />
 
   <initialWindow>
-    <content>RxVisualTransformer_AIR.swf</content>
+    <content>Main2.swf</content>
     <systemChrome>standard</systemChrome>
     <transparent>false</transparent>
     <visible>true</visible>
