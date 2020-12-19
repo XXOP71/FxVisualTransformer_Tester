@@ -1,5 +1,6 @@
 ﻿package RxGraphicsLibrary.Controls
 {
+	import flash.display.DisplayObjectContainer;
     import flash.display.DisplayObject;
     import flash.display.Graphics;
 	import flash.display.SimpleButton;
@@ -13,9 +14,8 @@
     import flash.text.TextField;
     import flash.events.KeyboardEvent;
     import flash.ui.Keyboard;
-    import RxGraphicsLibrary.Tools.RxDoubleAffair;
-    import flash.display.DisplayObjectContainer;
-    import hbx.found.CFrameTimer;
+    import RxGraphicsLibrary.Tools.RxDoubleAffair;    
+    import RxGraphicsLibrary.Tools.RxDelayRepeater;
     
 
 
@@ -33,7 +33,8 @@
             _cont.tabEnabled = false;			
 			_cont.addEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
 			_stage = _cont.stage;
-			_stage.addEventListener(KeyboardEvent.KEY_DOWN, pf_keyduan);
+			_stage.addEventListener(KeyboardEvent.KEY_UP, pf_keyup);
+			_stage.addEventListener(KeyboardEvent.KEY_DOWN, pf_keydown);
 			
 
             var spr_rxsb:Sprite = _cont['mvc_rxsb'];
@@ -41,8 +42,6 @@
 			
 			_spr_ipg = _cont['mvc_ipgb'];			
             _txb = _spr_ipg['txb'];
-//            _txb.addEventListener(KeyboardEvent.KEY_DOWN, pf_keyduan);
-//            _txb.addEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
 			
             _rxdbaff = new RxDoubleAffair();
             _txb.text = _rxdbaff.GetValueFixed();
@@ -57,14 +56,14 @@
 			_btnl = _spr_ipg['btnl'];
 			_btnl.addEventListener(MouseEvent.MOUSE_DOWN, pf_btnl_md);
 			_btnl.addEventListener(MouseEvent.MOUSE_UP, pf_btnl_mu);
-			_btnl.addEventListener(MouseEvent.CLICK, pf_btnl_cl);
+			
 			_btnr = _spr_ipg['btnr'];
 			_btnr.addEventListener(MouseEvent.MOUSE_DOWN, pf_btnr_md);
 			_btnr.addEventListener(MouseEvent.MOUSE_UP, pf_btnr_mu);
-			_btnr.addEventListener(MouseEvent.CLICK, pf_btnr_cl);
 			
-			_ftmr = new CFrameTimer(3, 0);
-			_ftmr.addEventListener(CFrameTimer.ET_UPDATE, pf_ftmr_udp);
+			
+			_drt = new RxDelayRepeater(_cont, 5, 3, 0, pf_drt_cf);
+			
         }
         private var _cont:Sprite;
 		private var _stage:Stage;
@@ -102,51 +101,6 @@
         {
             return _cbf;
         }
-		
-		
-		
-		//{{----------
-		private var _btnl:SimpleButton;
-		private function pf_btnl_cl(te:MouseEvent):void
-		{
-			pf_comupt(te, 'd', true);
-		}
-		private function pf_btnl_mu(te:MouseEvent):void
-		{
-			_ftmr.stop();
-		}
-		private function pf_btnl_md(te:MouseEvent):void
-		{
-			_rut = 'd';
-			_ri = 0;
-			_ftmr.start();
-		}
-		
-		private var _btnr:SimpleButton;
-		private function pf_btnr_cl(te:MouseEvent):void
-		{
-			pf_comupt(te, 'u', true);
-		}
-		private function pf_btnr_mu(te:MouseEvent):void
-		{
-			_ftmr.stop();
-		}
-		private function pf_btnr_md(te:MouseEvent):void
-		{
-			_rut = 'u';
-			_ri = 0;
-			_ftmr.start();
-		}
-		
-		private var _rut:String;
-		private var _ri:uint;
-		private var _ftmr:CFrameTimer;
-		private function pf_ftmr_udp(te:Event):void
-		{
-			_rxdbaff.ValueUpDown(_rut, _ri);
-			pf_valupt(true);
-		}
-		//}}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		
@@ -195,7 +149,6 @@
         {
             var tpr:Number = _rxsb.GetPositionRatio();
             _rxdbaff.SetRatio(tpr);
-
             _txb.text = _rxdbaff.GetValueFixed();
 
             if (_cbf !== null)
@@ -206,75 +159,141 @@
         {
             var tpr:Number = _rxdbaff.GetRatio();
             _rxsb.SetPositionRatio(tpr);
-
             _txb.text = _rxdbaff.GetValueFixed();
 
             if (tb && (_cbf !== null))
                 _cbf();
-        }
+        }		
 		
-		private function pf_comupt(te:*, tt:String, tb:Boolean):void
-		{			
-            var ti:uint = 0;
-            if (te.ctrlKey && te.shiftKey)
-                ti = 1;
-            else if (te.ctrlKey)
-                ti = 2;
-            else if (te.shiftKey)
-                ti = 3;
-				
-			_rxdbaff.ValueUpDown(tt, ti);
-			pf_valupt(tb);
-		}
-
 		private function pf_IsOver():Boolean
 		{
 			var tdoc:DisplayObjectContainer = _cont.parent;
 			var trct:Rectangle = _cont.getBounds(tdoc);
-			//trace(trct);
 			var tmx:Number = tdoc.mouseX;
 			var tmy:Number = tdoc.mouseY;
 			return trct.contains(tmx, tmy);
 		}
-        private function pf_keyduan(te:KeyboardEvent):void
+		
+		private function pf_comupt(tb:Boolean):void
+		{				
+			_rxdbaff.ValueUpDown(_rut, _ri);
+			pf_valupt(tb);
+		}
+		
+		
+		private function pf_kopset(te:KeyboardEvent, teb:Boolean):void
+		{
+			if (teb)
+			{
+				if (te.keyCode === Keyboard.UP)
+					_rut = 'u';
+				else if (te.keyCode === Keyboard.DOWN)
+					_rut = 'd';
+			}
+			
+			_ri = 0;
+			if (te.ctrlKey && te.shiftKey)
+				_ri = 1;
+			else if (te.ctrlKey)
+				_ri = 2;
+			else if (te.shiftKey)
+				_ri = 3;
+		}
+		
+		private function pf_keyup(te:KeyboardEvent):void		
+		{
+			_ri = 0;
+		}
+        private function pf_keydown(te:KeyboardEvent):void
         {
 			if (pf_IsOver())
 			{
-				if (te.keyCode === Keyboard.UP)
+				if ((te.keyCode === Keyboard.UP) ||
+					(te.keyCode === Keyboard.DOWN))
 				{
-					pf_comupt(te, 'u', true);
+					pf_kopset(te, true);
+					pf_comupt(true);
 				}
-				else if (te.keyCode === Keyboard.DOWN)
+				else
 				{
-					pf_comupt(te, 'd', true);
+					pf_kopset(te, false);
 				}
 			}
         }
+		
+		
+		
+		private function pf_kkupt_me(te:MouseEvent):void
+		{
+            if (te.delta > 0)
+				_rut = 'u';
+            else if (te.delta < 0)
+				_rut = 'd';
+				
+			_ri = 0;
+			if (te.ctrlKey && te.shiftKey)
+				_ri = 1;
+			else if (te.ctrlKey)
+				_ri = 2;
+			else if (te.shiftKey)
+				_ri = 3;
+		}
 
         private function pf_mswh(te:MouseEvent):void
         {
-            if (te.delta > 0)
-            {
-				pf_comupt(te, 'u', true);
-            }
-            else if (te.delta < 0)
-            {
-				pf_comupt(te, 'd', true);
-            }
+			pf_kkupt_me(te);
+			pf_comupt(true);
         }
-
 
         public function CallMouseWheelHandler(te:MouseEvent, tb:Boolean):void
         {
-            if (te.delta > 0)
-            {
-				pf_comupt(te, 'u', tb);
-            }
-            else if (te.delta < 0)
-            {
-				pf_comupt(te, 'd', tb);
-            }
+			pf_kkupt_me(te);
+			pf_comupt(tb);
         }
+		
+		
+		
+		
+		
+		private var _rut:String;
+		private var _ri:uint;
+		
+		
+		private var _btnl:SimpleButton;				
+		private function pf_btnl_mu(te:MouseEvent):void
+		{
+			_drt.stop();
+		}
+		private function pf_btnl_md(te:MouseEvent):void
+		{
+			_rut = 'd';
+			_drt.start();
+			pf_drt_cf(RxDelayRepeater.CF_TYPE_UPDATE);
+		}
+		
+		private var _btnr:SimpleButton;
+		private function pf_btnr_mu(te:MouseEvent):void
+		{
+			_drt.stop();
+		}
+		private function pf_btnr_md(te:MouseEvent):void
+		{
+			_rut = 'u';
+			_drt.start();
+			pf_drt_cf(RxDelayRepeater.CF_TYPE_UPDATE);
+		}
+
+
+		private var _drt:RxDelayRepeater;
+		private function pf_drt_cf(ttp:String):void
+		{
+			if (ttp === RxDelayRepeater.CF_TYPE_BEGIN) { }
+			else
+			{
+				_rxdbaff.ValueUpDown(_rut, _ri);
+				pf_valupt(true);
+			}
+		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		
@@ -359,7 +378,7 @@
         {
             _rxdbaff.SetValue(tv);
 			pf_AfterSideUpdate();
-			trace('####1', _rxdbaff.GetValue(), tv);
+			//trace('####1', _rxdbaff.GetValue(), tv);
         }
 		
 		
@@ -396,11 +415,29 @@
 			{
 				_rxdbaff.SetMinValue(0);
 				_rxdbaff.SetMaxValue(0);
+				_rxsb.SetScrollSizeRatio(1);
+				pf_AfterSideUpdate();
+			}
+        }
+		
+        public function SetValues(min:Number, max:Number, val:Number, tssr:Number):void
+        {
+			if (min < max)
+			{
+				_rxdbaff.SetMinValue(min);
+				_rxdbaff.SetMaxValue(max);
+				_rxdbaff.SetValue(val);
+				_rxsb.SetScrollSizeRatio(tssr);
+				pf_AfterSideUpdate();				
+			}
+			else			
+			{
+				_rxdbaff.SetMinValue(0);
+				_rxdbaff.SetMaxValue(0);
+				_rxdbaff.SetValue(0);
 				_rxsb.SetScrollSizeRatio(1);				
 				pf_AfterSideUpdate();
 			}
-			
-			//trace(tmv / tiv);
         }
 		
 		
@@ -413,8 +450,7 @@
 //        {
 //			_rxsb.SetScrollSizeRatio(tssr);
 //        }
-		
-		
+
 		
 		public function ToString():String
 		{

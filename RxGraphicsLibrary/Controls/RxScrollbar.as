@@ -100,7 +100,7 @@
             ty = _rctTrack.y,
             tw = _rctTrack.width,
             th = _rctTrack.height;
-            _grp.beginFill(0x663300, 1);
+            _grp.beginFill(0xff6600, 1);
             _grp.drawRect(tx, ty, tw, th);
             _grp.endFill();
 
