@@ -25,20 +25,19 @@
     {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public function RxScrollInput2(cont:Sprite, ttp:String,
-                            tsz:Number = 400, tssr:Number = 1.0, tpr:Number = 0.0,
-                            tcbf:Function = null)
+        public function RxScrollInput2(cont:Sprite, ttp:String, tcbf:Function)
         {
             _cont = cont;
             _cont.tabEnabled = false;			
 			_cont.addEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
+			
 			_stage = _cont.stage;
 			_stage.addEventListener(KeyboardEvent.KEY_UP, pf_keyup);
 			_stage.addEventListener(KeyboardEvent.KEY_DOWN, pf_keydown);
 			
 
             var spr_rxsb:Sprite = _cont['mvc_rxsb'];
-            _rxsb = new RxScrollbar(ttp, spr_rxsb, tsz, tssr, tpr, pf_rxsb__cbf);
+            _rxsb = new RxScrollbar(ttp, spr_rxsb, spr_rxsb.width, 1.0, 0.0, pf_rxsb__cbf);
 			
 			_spr_ipg = _cont['mvc_ipgb'];			
             _txb = _spr_ipg['txb'];
@@ -50,6 +49,7 @@
 			
 			
             _cbf = tcbf;
+			
 			
 			
 			
@@ -101,6 +101,44 @@
         {
             return _cbf;
         }
+		
+		
+		public function Clear():void
+		{
+			if (_cont === null) return;
+			
+			_spr_ipg = null;
+			
+			_txb.text = '';
+			_txb = null;
+			
+			_cbf = null;
+
+			_rxsb = null;			
+			_rxdbaff = null;
+			
+			
+			
+			_btnl.addEventListener(MouseEvent.MOUSE_DOWN, pf_btnl_md);
+			_btnl.addEventListener(MouseEvent.MOUSE_UP, pf_btnl_mu);
+			_btnl = null;			
+			
+			_btnr.addEventListener(MouseEvent.MOUSE_DOWN, pf_btnr_md);
+			_btnr.addEventListener(MouseEvent.MOUSE_UP, pf_btnr_mu);
+			_btnr = null;
+			
+			
+			_drt.stop();
+			_drt = null;
+			
+			
+			_stage.removeEventListener(KeyboardEvent.KEY_UP, pf_keyup);
+			_stage.removeEventListener(KeyboardEvent.KEY_DOWN, pf_keydown);
+			_stage = null;
+			
+			_cont.removeEventListener(MouseEvent.MOUSE_WHEEL, pf_mswh);
+			_cont = null;
+		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		
@@ -185,10 +223,10 @@
 		{
 			if (teb)
 			{
-				if (te.keyCode === Keyboard.UP)
-					_rut = 'u';
-				else if (te.keyCode === Keyboard.DOWN)
+				if (te.keyCode === Keyboard.LEFT)
 					_rut = 'd';
+				else if (te.keyCode === Keyboard.RIGHT)
+					_rut = 'u';
 			}
 			
 			_ri = 0;
@@ -208,8 +246,8 @@
         {
 			if (pf_IsOver())
 			{
-				if ((te.keyCode === Keyboard.UP) ||
-					(te.keyCode === Keyboard.DOWN))
+				if ((te.keyCode === Keyboard.LEFT) ||
+					(te.keyCode === Keyboard.RIGHT))
 				{
 					pf_kopset(te, true);
 					pf_comupt(true);
@@ -225,10 +263,10 @@
 		
 		private function pf_kkupt_me(te:MouseEvent):void
 		{
-            if (te.delta > 0)
-				_rut = 'u';
-            else if (te.delta < 0)
+            if (te.delta < 0)
 				_rut = 'd';
+            else if (te.delta > 0)
+				_rut = 'u';
 				
 			_ri = 0;
 			if (te.ctrlKey && te.shiftKey)
@@ -310,6 +348,17 @@
         {
             _rxsb.SetSize(tv);
         }
+		
+		
+        public function GetScrollSizeRatio():Number
+        {
+			return _rxsb.GetScrollSizeRatio();
+        }
+		
+        public function SetScrollSizeRatio(tssr:Number):void
+        {
+			_rxsb.SetScrollSizeRatio(tssr);
+        }
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		
@@ -317,7 +366,7 @@
 		
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
         public function GetValueGapArr():Vector.<Number>
         {
 			return _rxdbaff.GetValueGapArr();
@@ -337,15 +386,17 @@
 			_rxdbaff.SetFixedNum(tfd);
         }
 		
-
-
+		
+		
+		
 		//````(중요)
 		private function pf_AfterSideUpdate():void
 		{
             var tpr:Number = _rxdbaff.GetRatio();
             _rxsb.SetPositionRatio(tpr);
-            _txb.text = _rxdbaff.GetValueFixed();			
+            _txb.text = _rxdbaff.GetValueFixed();
 		}
+		
 		
 		
         public function GetMinValue():Number
@@ -378,7 +429,6 @@
         {
             _rxdbaff.SetValue(tv);
 			pf_AfterSideUpdate();
-			//trace('####1', _rxdbaff.GetValue(), tv);
         }
 		
 		
@@ -398,28 +448,7 @@
 		
 		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public function SetCalcValues(tmv:Number, tiv:Number):void
-        {
-			if (tmv < tiv)
-			{
-				var tdh:Number = tiv - tmv;
-				_rxdbaff.SetMinValue(0.0);
-				_rxdbaff.SetMaxValue(tdh);
-
-				var tssr:Number = tmv / tiv;				
-				_rxsb.SetScrollSizeRatio(tssr);
-				pf_AfterSideUpdate();
-			}
-			else
-			{
-				_rxdbaff.SetMinValue(0);
-				_rxdbaff.SetMaxValue(0);
-				_rxsb.SetScrollSizeRatio(1);
-				pf_AfterSideUpdate();
-			}
-        }
-		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
         public function SetValues(min:Number, max:Number, val:Number, tssr:Number):void
         {
 			if (min < max)
@@ -439,17 +468,6 @@
 				pf_AfterSideUpdate();
 			}
         }
-		
-		
-//        public function GetScrollSizeRatio():Number
-//        {
-//			return _rxsb.GetScrollSizeRatio();
-//        }
-//		
-//        public function SetScrollSizeRatio(tssr:Number):void
-//        {
-//			_rxsb.SetScrollSizeRatio(tssr);
-//        }
 
 		
 		public function ToString():String
