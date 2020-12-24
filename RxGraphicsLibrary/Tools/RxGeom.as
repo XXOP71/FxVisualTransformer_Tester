@@ -135,6 +135,7 @@
             return DoubleRound(tdo.rotation);
         }
 
+		/*
         public static function CheckRadian(trd:Number):Number
         {
             if (trd < 0)
@@ -143,6 +144,15 @@
                 trd = trd - FullRadian;
             return DoubleRound(trd);
         }
+		*/
+        public static function CheckRadian(trd:Number):Number
+        {
+			if (trd < 0)
+			{
+				trd = FullRadian + trd;
+			}
+			return trd;
+        }		
 
 
 
